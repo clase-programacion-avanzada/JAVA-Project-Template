@@ -1,0 +1,29 @@
+# En la carpeta 'resources' se encuentran los archivos csv para cargar al programa:
+
+# El primer archivo es 'artists.csv' que contiene la información de los artistas.
+# La estructura del archivo es la siguiente:
+# id;name
+33f20939-c665-4e1d-aac1-e340c3d95656;Shakira
+62506fc4-639a-4160-8f26-6c478462621e;Wyclef Jean
+
+# El segundo archivo es 'songs.csv' que contiene la información de las canciones.
+# La estructura del archivo es la siguiente:
+# id;name;{artist_id1,artist_id2...};genre;duration;album
+# Nota: Los artistas de la canción están separados por comas y encerrados entre llaves.
+# En este caso, la canción 'Hips Don't Lie' de Shakira y Wyclef Jean está en el archivo.
+92ab9e23-613e-4ae3-9378-0824e846836c;Hips Don't Lie;{33f20939-c665-4e1d-aac1-e340c3d95656,62506fc4-639a-4160-8f26-6c478462621e};Pop;223;Oral Fixation, Vol. 2
+
+# El tercer archivo es 'playlists.csv' que contiene la información de las listas de reproducción.
+# En el caso de las playlists, la estructura del archivo es la siguiente:
+# id;name;{song_id1,song_id2...}
+# Nota: Las canciones de la lista de reproducción están separadas por comas y encerradas entre llaves.
+# En este caso, la playlist 'PlayList2' contiene la canción 'Hips Don't Lie'.
+4e9f14c7-70d5-4059-9fa6-fe59272bc375;PlayList2;{92ab9e23-613e-4ae3-9378-0824e846836c}
+
+# El cuarto archivo es 'customers.csv' que contiene la información de los clientes.
+# La estructura del archivo es la siguiente:
+# id;username;password;first_name;last_name;age;{artist_id1,artist_id2...};{playlist_id1,playlist_id2...}
+# Nota: Los artistas y las listas de reproducción del cliente están separados por comas y encerrados entre llaves.
+# En este caso, el cliente 'Marcusfenix' tiene 34 años y tiene la playlist 'PlayList2'.
+# Además, sigue a Shakira.
+d4e6c3c7-54eb-4edc-94c7-416504663f82;Marcusfenix;G3ars_1234567;Marcus;Fenix;34;{33f20939-c665-4e1d-aac1-e340c3d95656};{4e9f14c7-70d5-4059-9fa6-fe59272bc375}

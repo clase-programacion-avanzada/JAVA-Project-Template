@@ -1,45 +1,46 @@
 
 # Indice
 
-1. Proyecto Aplicación de Música
-   2Paquetes
-   - Paquete Models
-      - Clase `Artist`
-      - Clase `PlayListService`
-      - Clase `ReportService`
-      - Clase `SongService`
-   - Paquete `controllers`
-      - Clase `AdminController`
-      - Clase `CustomerController`
-      - Clase `FileManagementController`
-      - Clase `ReportController`
-   - Paquete `views`
-      - Clase `AdminView`
-      - Clase `CustomerView`
-      - Clase `FileManagementView`
-      - Clase `ReportView`
-   - Paquete `exceptions`
-      - Clase `AlreadyExistsException`
-      - Clase `NotFoundException`
-      - Clase `WrongLogInException`
-3. Clases sin paquete
-   - Clase `Main`
-4. Diagrama de clases
-5. Entrega del proyecto
-   - Funcionalidades
-      - Funcionalidades del módulo de administrador
-      - Funcionalidades del módulo de cliente
-      - Funcionalidades del módulo de gestión de archivos
-      - Funcionalidades del módulo de informes
-   - Reglas de negocio
+1. [Proyecto Aplicación de Música](#proyecto-aplicación-de-música)
+2. [Paquetes](#paquetes)
+    - [Paquete Models](#paquete-models)
+        - [Clase `Artist`](#clase-artist)
+        - [Clase `PlayListService`](#clase-playlistservice)
+        - [Clase `ReportService`](#clase-reportservice)
+        - [Clase `SongService`](#clase-songservice)
+    - [Paquete `controllers`](#paquete-controllers)
+        - [Clase `AdminController`](#clase-admincontroller)
+        - [Clase `CustomerController`](#clase-customercontroller)
+        - [Clase `FileManagementController`](#clase-filemanagementcontroller)
+        - [Clase `ReportController`](#clase-reportcontroller)
+    - [Paquete `views`](#paquete-views)
+        - [Clase `AdminView`](#clase-adminview)
+        - [Clase `CustomerView`](#clase-customerview)
+        - [Clase `FileManagementView`](#clase-filemanagementview)
+        - [Clase `ReportView`](#clase-reportview)
+    - [Paquete `exceptions`](#paquete-exceptions)
+        - [Clase `AlreadyExistsException`](#clase-alreadyexistsexception)
+        - [Clase `NotFoundException`](#clase-notfoundexception)
+        - [Clase `WrongLogInException`](#clase-wrongloginexception)
+3. [Clases sin paquete](#clases-sin-paquete)
+    - [Clase `Main`](#clase-main)
+4. [Diagrama de clases](#diagrama-de-clases)
+5. [Entrega del proyecto](#entrega-del-proyecto)
+    - [Funcionalidades](#funcionalidades)
+        - [Funcionalidades del módulo de administrador](#funcionalidades-del-módulo-de-administrador)
+        - [Funcionalidades del módulo de cliente](#funcionalidades-del-módulo-de-cliente)
+        - [Funcionalidades del módulo de gestión de archivos](#funcionalidades-del-módulo-de-gestión-de-archivos)
+        - [Funcionalidades del módulo de informes](#funcionalidades-del-módulo-de-informes)
+    - [Reglas de negocio](#reglas-de-negocio)
 
-# Proyecto Aplicación de Música
+# Proyecto Aplicación de Música 
 
 A continuación se presenta la documentación del proyecto de una aplicación de música. 
 Va a encontrar una explicación detallada de las clases que deben existir en el proyecto.
     Este proyecto no se encuentra terminado, por lo que puede que algunos de los métodos o atributos presentados no estén implementados aún en el código. 
     Su tarea es completar la implementación de las clases y métodos faltantes.
 
+[Volver al índice](#indice)
 
 
 # Paquetes
@@ -50,6 +51,8 @@ El paquete `Models` contiene las clases que representan las entidades principale
   Una entidad, en el contexto de la programación y el desarrollo de software, se refiere a un objeto o concepto que es identificable. 
   En términos simples, una entidad es una instancia única de un objeto.
     En este programa, las entidades son: Artist, Customer, PlayList y Song.
+
+[Volver al índice](#indice)
 
 ### Clase `Artist`:
 
@@ -86,6 +89,8 @@ La clase `Artist` tiene varios métodos:
 5. `public String toString()`: Este método devuelve una representación de cadena del objeto `Artist`. El formato de representación es: `"Nombre: " + name + " - id: " + id`.
 
 6. `public static Artist GetUnknownArtist(String id)`: Este método devuelve un objeto `Artist` con datos desconocidos. Este método se utiliza cuando el artista no se encuentra en el archivo.
+
+[Volver al índice](#indice)
 
 ### Clase `Customer`
 
@@ -147,6 +152,8 @@ La clase `Customer` tiene varios métodos:
 
 12. `public String toString()`: Este método devuelve una representación de cadena del objeto `Customer`. El formato de representación es: `"Nombre completo : " + name + " " + lastName + " - username: " + username + " - Edad: " + age + " - Artistas seguidos: " + followedArtists.size() + " - Playlists: " + playLists.size()`.
 
+[Volver al índice](#indice)
+
 ### Clase PlayList
 
 La clase `PlayList` representa una lista de reproducción en una aplicación de música. Es una clase simple de Java que implementa la interfaz `Serializable`, lo que permite que las instancias de esta clase se conviertan en un flujo de bytes y viceversa. Esto es útil para guardar objetos en disco o enviarlos a través de una red.
@@ -192,6 +199,8 @@ La clase `PlayList` tiene varios métodos:
 9. `public String toString()`: Este método devuelve una representación de cadena del objeto `PlayList`. El formato de representación es: `"nombre de la playlist: " + name + " con id: " + id + " y número de canciones: " + songs.size()`.
 
 10. `public static PlayList getUnknownPlayList(String playListId)`: Este método devuelve un objeto `PlayList` con datos desconocidos. Este método se utiliza cuando la lista de reproducción no se encuentra en el archivo.
+
+[Volver al índice](#indice)
 
 ### Clase Song
 
@@ -241,6 +250,8 @@ La clase `Song` tiene varios métodos:
 
 8. `public static Song getUnknownSong(String songId)`: Este método devuelve un objeto `Song` con datos desconocidos. Este método se utiliza cuando la canción no se encuentra en el archivo.
 
+[Volver al índice](#indice)
+
 ## Paquete `services`
 
 El paquete Services contiene las clases que implementan la lógica de negocio de la aplicación de música.
@@ -253,6 +264,8 @@ En el contexto de una aplicación de música, la lógica de negocio podría incl
 
 Por ejemplo, la clase `ArtistService` implementa la lógica de negocio relacionada con los artistas, proporcionando métodos para agregar, obtener y eliminar artistas, 
     así como para obtener información relacionada con los artistas. De manera similar, la clase `CustomerService` implementa la lógica de negocio relacionada con los clientes, proporcionando métodos para agregar, obtener y eliminar clientes, así como para manejar la autenticación y la información relacionada con los clientes.
+
+[Volver al índice](#indice)
 
 ### Clase ArtistService
 
@@ -291,6 +304,8 @@ La clase `ArtistService` tiene varios métodos:
 8. `public List<Artist> getArtistsByIds(Set<String> artists)`: Este método recupera una lista de artistos por sus IDs.
 
 9. `public void deleteArtist(String artistId)`: Este método elimina un artista por su ID.
+
+[Volver al índice](#indice)
 
 ### Clase CustomerService
 
@@ -342,6 +357,8 @@ La clase `CustomerService` tiene varios métodos:
 
 14. `public void logOut()`: Este método cierra la sesión del cliente que ha iniciado sesión actualmente.
 
+[Volver al índice](#indice)
+
 ### Clase FileManagementService
 
 La clase `FileManagementService` es parte de una aplicación de música y es responsable de la gestión de archivos. Proporciona una variedad de métodos para manejar operaciones relacionadas con la importación y exportación de datos.
@@ -388,6 +405,8 @@ La clase `FileManagementService` tiene varios métodos:
 
 19. `public void exportCustomersToBinary(String path, String customersFileName, List<Customer> customers)`: Este método exporta una lista de clientes a un archivo binario.
 
+[Volver al índice](#indice)
+
 ### Clase PlayListService
 
 La clase `PlayListService` es parte de una aplicación de música y es responsable de administrar las listas de reproducción. Proporciona una variedad de métodos para manejar operaciones relacionadas con las listas de reproducción.
@@ -427,6 +446,8 @@ La clase `PlayListService` tiene varios métodos:
 9. `public List<String> getPlayListsToString()`: Este método devuelve una lista de las representaciones de cadena de todas las listas de reproducción.
 
 10. `public List<Song> getAllSongsInPlayLists()`: Este método devuelve una lista de todas las canciones en todas las listas de reproducción.
+
+[Volver al índice](#indice)
 
 ### Clase ReportService
 
@@ -478,9 +499,13 @@ La clase `SongService` tiene varios métodos:
 
 8. `public List<Song> searchSongsByArtistId(String artistId)`: Este método devuelve una lista de canciones por el ID del artista.
 
+[Volver al índice](#indice)
+
 ## Paquete `controllers`
 
 El paquete Controllers contiene las clases que coordinan las acciones entre el modelo y la vista en la aplicación de música. Estas clases son `AdminController`, `CustomerController`, `FileManagementController`, y `ReportController`.
+
+[Volver al índice](#indice)
 
 ### Clase AdminController
 
@@ -530,6 +555,8 @@ La clase `AdminController` tiene varios métodos:
 
 11. `public List<String> getAllPlaylists()`: Este método recupera todas las listas de reproducción de la base de datos.
 
+[Volver al índice](#indice)
+
 ### Clase CustomerController
 
 La clase `CustomerController` es parte de una aplicación de música y es responsable de manejar tareas relacionadas con los clientes en la aplicación. Proporciona una variedad de métodos para manejar operaciones relacionadas con artistas, listas de reproducción y canciones.
@@ -578,6 +605,8 @@ La clase `CustomerController` tiene varios métodos:
 
 11. `public void logOut()`: Este método es responsable de cerrar la sesión del cliente actualmente conectado.
 
+[Volver al índice](#indice)
+
 ### Clase FileManagementController
 
 La clase `FileManagementController` es parte de una aplicación de música y es responsable de manejar tareas relacionadas con la gestión de archivos en la aplicación. Proporciona una variedad de métodos para manejar operaciones relacionadas con artistas, canciones, listas de reproducción y clientes.
@@ -613,6 +642,8 @@ La clase `FileManagementController` tiene varios métodos:
 3. `public void saveSpotifyFiles(String path, String extension, String artistsFileName, String songsFileName, String playListsFileName, String customersFileName)`: Este método es responsable de guardar datos en archivos binarios.
 
 4. `public void loadSpotifyFiles(String path, String extension, String artistsFileName, String songsFileName, String playListsFileName, String customersFileName)`: Este método es responsable de cargar datos desde archivos binarios.
+
+[Volver al índice](#indice)
 
 ### Clase ReportController
 
@@ -650,9 +681,13 @@ La clase `ReportController` tiene varios métodos:
 
 4. `public String showMostAddedSongOfArtist(String artistId)`: Este método es responsable de mostrar la canción más agregada de un artista específico en las listas de reproducción.
 
+[Volver al índice](#indice)
+
 ## Paquete `views`
 
 El paquete Views contiene las clases que se encargan de la interacción con el usuario en la aplicación de música. Estas clases son `AdminView`, `CustomerView`, `FileManagementView`, y `ReportView`.
+
+[Volver al índice](#indice)
 
 ### Clase AdminView
 
@@ -700,9 +735,13 @@ La clase `AdminView` tiene varios métodos:
 
 12. `private void printMenu()`: Este método es responsable de mostrar el menú al usuario.
 
+[Volver al índice](#indice)
+
 ### Clase CustomerView
 
 La clase `CustomerView` es parte de una aplicación de música y es responsable de proporcionar una interfaz de usuario para interactuar con la aplicación desde la perspectiva de un cliente. Proporciona una variedad de métodos para manejar operaciones relacionadas con listas de reproducción, canciones y artistas.
+
+[Volver al índice](#indice)
 
 #### Atributos
 
@@ -752,6 +791,8 @@ La clase `CustomerView` tiene varios métodos:
 
 15. `public boolean logIn()`: Este método es responsable de iniciar sesión del usuario.
 
+[Volver al índice](#indice)
+
 ### Clase FileManagementView
 
 La clase `FileManagementView` es parte de una aplicación de música y es responsable de proporcionar una interfaz de usuario para interactuar con la aplicación desde la perspectiva de la gestión de archivos. Proporciona una variedad de métodos para manejar operaciones relacionadas con la importación y exportación de archivos.
@@ -798,6 +839,8 @@ La clase `FileManagementView` tiene varios métodos:
 
 6. `public void printMenu()`: Este método es responsable de mostrar el menú al usuario.
 
+[Volver al índice](#indice)
+
 ### Clase ReportView
 
 La clase `ReportView` es parte de una aplicación de música y es responsable de proporcionar una interfaz de usuario para interactuar con la aplicación desde la perspectiva de los informes. Proporciona una variedad de métodos para manejar operaciones relacionadas con la visualización de informes de artistas, canciones y listas de reproducción.
@@ -832,10 +875,13 @@ La clase `ReportView` tiene varios métodos:
 
 6. `private void printMenu()`: Este método es responsable de mostrar el menú al usuario.
 
+[Volver al índice](#indice)
 
 ## Paquete `exceptions`
 
 El paquete Exceptions contiene las clases que representan excepciones personalizadas que pueden ser lanzadas por la aplicación de música. Estas clases son `AlreadyExistsException`, `NotFoundException`, y `WrongLogInException`.
+
+[Volver al índice](#indice)
 
 ### Clase AlreadyExistsException
 
@@ -847,6 +893,8 @@ La clase `AlreadyExistsException` tiene un constructor:
 
 1. `public AlreadyExistsException(String message)`: Este constructor crea un objeto `AlreadyExistsException` e inicializa el mensaje de detalle con el proporcionado.
 
+[Volver al índice](#indice)
+
 ### Clase NotFoundException
 
 La clase `NotFoundException` es una excepción personalizada que se lanza cuando una entidad no se encuentra. Esto podría usarse, por ejemplo, al intentar recuperar un usuario, una canción, una lista de reproducción o un artista por su ID y no se encuentra ninguna coincidencia.
@@ -856,6 +904,8 @@ La clase `NotFoundException` es una excepción personalizada que se lanza cuando
 La clase `NotFoundException` tiene un constructor:
 
 1. `public NotFoundException(String message)`: Este constructor crea un objeto `NotFoundException` e inicializa el mensaje de detalle con el proporcionado.
+
+[Volver al índice](#indice)
 
 ### Clase WrongLogInException
 
@@ -867,7 +917,7 @@ La clase `WrongLogInException` tiene un constructor:
 
 1. `public WrongLogInException(String message)`: Este constructor crea un objeto `WrongLogInException` e inicializa el mensaje de detalle con el proporcionado.
 
-Por favor, hágamelo saber si necesita más detalles sobre alguna parte específica de la clase `WrongLogInException`.
+[Volver al índice](#indice)
 
 ## Clases sin paquete
 
@@ -894,6 +944,8 @@ El método `main` realiza las siguientes operaciones:
 4. Entra en un bucle que muestra un menú al usuario y maneja la selección del usuario. El bucle continúa hasta que el usuario selecciona la opción para salir.
 
 5. Maneja las excepciones que pueden ocurrir durante la ejecución de la aplicación.
+
+[Volver al índice](#indice)
 
 # Diagrama de clases
 A continuación encontrará el diagrama de clases del proyecto, si requiere verlo en mayor resolución, puede hacer click en la imagen
@@ -936,6 +988,7 @@ Para la entrega debe completar las siguientes funcionalidades:
 3. Debe permitir al usuario guardar datos en archivos binarios.
 4. Debe permitir al usuario cargar datos desde archivos binarios.
 
+Nota: Puede encontrar un ejemplo del formato de los archivos CSV en la carpeta [resources](src/main/resources/explanation.csv).
 ### Funcionalidades del módulo de informes
 
 1. Debe permitir al usuario ver los artistas más seguidos.
@@ -944,15 +997,15 @@ Para la entrega debe completar las siguientes funcionalidades:
 
 ### Reglas de negocio
 
-- Al crear un nuevo artista se debe validar que el nombre del artista no esté vacío.
-- Al crear una nueva canción se debe validar que el nombre de la cancióny el género no estén vacíos y que la duración sea mayor a 0.
+- Al crear un nuevo artista se debe validar que el nombre del artista no esté vacío. Además se debe validar que el nombre del artista no exista en la base de datos.
+- Al crear una nueva canción se debe validar que el nombre de la canción y el género no estén vacíos y que la duración sea mayor a 0.
 - Al crear un nuevo cliente se debe validar que el nombre de usuario y la contraseña no estén vacíos y que la edad sea mayor 14.
 - Al crear un nuevo cliente se debe validar que el nombre de usuario no exista en la base de datos.
-- Al crear un nuevo cliente, el username debe tener al menos 8 caracteres, el primer caracter debe ser una letra, puede incluir números, letras o el caracter '_' .
+- Al crear un nuevo cliente, el username debe tener al menos 8 caracteres, el primer caracter debe ser una letra, puede incluir números, letras o el caracter '_'.
   - puede que le sea útil la siguiente expresión regular: `^[a-zA-Z][a-zA-Z0-9_]{7,30}$$` 
 - Al crear un nuevo cliente, la contraseña debe tener al menos 8 caracteres, una letra mayúscula, una minúscula y cualquiera de los caracteres especiales (#?!@$ %^&*-).
   - puede que le sea útil la siguiente expresión regular: `^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$`
-- Un Cliente no peude seguir dos veces al mismo artista. Esto quiere decir que si un cliente ya sigue a un artista, no puede volver a seguirlo.
+- Un Cliente no puede seguir dos veces al mismo artista. Esto quiere decir que si un cliente ya sigue a un artista, no puede volver a seguirlo.
 - Si el usuario ingresa una letra en lugar de un número en la opción del menú, el programa debe mostrar un mensaje de error y solicitar al usuario que ingrese un número válido.
 - Al eliminar un artista, se deben eliminar todas las canciones asociadas a ese artista.
 - Al eliminar un cliente, se deben eliminar todas las listas de reproducción asociadas a ese cliente.
@@ -960,3 +1013,5 @@ Para la entrega debe completar las siguientes funcionalidades:
 - Se deben manejar todas las excepciones que puedan ocurrir durante la ejecución del programa.
 - Al agregar una canción a una lista de reproducción, se debe validar que la canción y la lista de reproducción existan en la base de datos.
 - Para asegurarse que el programa pueda crecer en el futuro se debe seguir la arquitectura propuesta en el documento.
+
+[Volver al índice](#indice)
