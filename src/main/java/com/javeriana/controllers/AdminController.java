@@ -4,6 +4,7 @@ import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
 import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
+import com.javeriana.models.PlayList;
 import com.javeriana.models.Song;
 import com.javeriana.services.ArtistService;
 import com.javeriana.services.CustomerService;
@@ -161,8 +162,12 @@ public class AdminController {
      * @param username the username of the customer to delete.
      */
     public void deleteCustomerFromDatabase(String username) {
+        List<UUID> playListIds = new ArrayList<>();
+        playListIds = customerService.getCustomerPlayListsIds(username);
 
+        playListService.deletePlayLists(playListIds);
 
+        customerService.deleteCustomer(username);
 
     }
 
