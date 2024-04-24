@@ -3,6 +3,7 @@ package com.javeriana.controllers;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
 import com.javeriana.models.Artist;
+import com.javeriana.models.Customer;
 import com.javeriana.models.Song;
 import com.javeriana.services.ArtistService;
 import com.javeriana.services.CustomerService;
@@ -130,9 +131,17 @@ public class AdminController {
      * @param age the age of the customer.
      * @throws AlreadyExistsException if a customer with the same username already exists in the database.
      */
-    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age) {
+    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age) throws AlreadyExistsException {
+        Customer customerUsername = customerService.searchCustomerByUsername(username);
+        if (customerUsername != null) {
+            throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
+        }
+        Customer customerPassword = customerService.searchCustomerByUsername(password);
+        Customer customerName = customerService.searchCustomerByUsername(name);
+        Customer customerLastNamed = customerService.searchCustomerByUsername(lastName);
+        Customer customerAge = customerService.searchCustomerByUsername(Integer.toString(age));
 
-
+        customerService.addCustomer(username, password, name, lastName, age);
     }
 
     /**

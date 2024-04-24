@@ -219,7 +219,7 @@ public class AdminView {
      * 3. Data Creation: The method calls the addCustomerToDatabase method of the adminController object, passing the customer details as parameters. This operation creates a new customer in the database.
      * 4. Confirmation Message: Finally, the method prints a message to the console to confirm that the customer has been created.
      */
-    private void addCustomerToDatabase() {
+    private void addCustomerToDatabase() throws AlreadyExistsException{
 
         System.out.println("Crear cliente.");
 
