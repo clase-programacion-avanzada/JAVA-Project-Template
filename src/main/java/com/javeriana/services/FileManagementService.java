@@ -4,12 +4,8 @@ import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
 import com.javeriana.models.PlayList;
 import com.javeriana.models.Song;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
@@ -38,7 +34,8 @@ import java.util.UUID;
  * This class uses a list to store customers and a Customer object to keep track of the currently logged in customer.
  * It also uses several constants for validating usernames, passwords, and the minimum age for registration.
  */
-public class FileManagementService {
+public class FileManagementService
+{
 
     //region import from csv
 
@@ -60,7 +57,8 @@ public class FileManagementService {
      * @return A list of Artist objects.
      * @throws IOException If an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read.
      */
-    public List<Artist> importArtistsFromCSV(String path, String separator,String artistsFileName) throws IOException {
+    public List<Artist> importArtistsFromCSV(String path, String separator,String artistsFileName) throws IOException
+    {
 
         // Create a File object with the given path and filename
         File file = new File(path + artistsFileName);
@@ -86,7 +84,7 @@ public class FileManagementService {
 
     /**
      * Imports a list of songs from a CSV file.
-     *
+
      * The method does the following:
      * 1. Creates a File object using the provided path and filename.
      * 2. Reads all lines from the file into a list of strings.
@@ -137,10 +135,10 @@ public class FileManagementService {
             for (String artistId : artistIds) {
                 // Add the artist to the list of artists for the song
                 artists.add(
-                    artistsById.getOrDefault(
-                        artistId,
-                        Artist.GetUnknownArtist(artistId)
-                    )
+                        artistsById.getOrDefault(
+                                artistId,
+                                Artist.GetUnknownArtist(artistId)
+                        )
                 );
             }
 
@@ -178,7 +176,7 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs reading from the file.
      */
     public List<PlayList> importPlayListsFromCSV(String path, String separator, String playListsFileName, Map<String, Song> songsById)
-        throws IOException {
+            throws IOException {
 
         //PlayList File has the following format:
         //PlayListId,PlayListName,{SongId1,SongId2,SongId3,...}
@@ -193,7 +191,13 @@ public class FileManagementService {
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 
         // Loop through each line in the file
-
+        for (String line : lines){
+            String[] data = line.split(separator);
+            UUID id = UUID.fromString(data[0]);
+            String name = data[1];
+            List<String> songIds = extractIds(data[2]);
+            List<Song> songs = new ArrayList<>();
+        }
 
         // Return the list of playLists
         return playLists;
@@ -241,7 +245,18 @@ public class FileManagementService {
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 
         // Loop through each line in the file
+        for (String line : lines){
+            String[] data = line.split(separator);
+            UUID id = UUID.fromString(data[0]);
+            String username = data[1];
+            String password = data[2];
+            String name = data[3];
+            String lastName = data[4];
+            int age = Integer.parseInt(data[5]);
+            Set<Artist> artists = new HashSet<>();
+            List<PlayList> playLists = new ArrayList<>();
 
+        }
         // Return the list of customers
         return customers;
 
@@ -296,7 +311,7 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportArtistsToCSV(String defaultPath, String separator, String defaultArtistsFileName, List<Artist> artists)
-        throws IOException {
+            throws IOException {
 
         // Create a list to store the lines to write to the file
         List<String> linesToWrite = new ArrayList<>();
@@ -328,7 +343,7 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportSongsToCSV(String defaultPath, String separator, String defaultSongsFileName, List<Song> songs)
-        throws IOException {
+            throws IOException {
 
         // Create a list to store the lines to write to the file
         List<String> linesToWrite = new ArrayList<>();
@@ -360,7 +375,7 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportPlayListsToCSV(String path, String separator, String playListsCSVFileName, List<PlayList> playLists)
-        throws IOException {
+            throws IOException {
 
         // Create a list to store the lines to write to the file
         List<String> linesToWrite = new ArrayList<>();
@@ -393,13 +408,15 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportCustomersToCSV(String path, String separator, String customersCSVFileName, List<Customer> customers)
-        throws IOException {
+            throws IOException {
 
         // Create a list to store the lines to write to the file
         List<String> linesToWrite = new ArrayList<>();
 
         // Loop through each customer
-
+        for (Customer customer : customers){
+            linesToWrite.add(customer.toCSV(separator));
+        }
 
         // Write the lines to the file
         writeTextFile(path + customersCSVFileName, linesToWrite);
@@ -423,7 +440,7 @@ public class FileManagementService {
      */
     private void writeTextFile(String path,
                                List<String> linesToWrite)
-        throws IOException {
+            throws IOException {
 
         // Create a File object with the given path
         File file = new File(path);
@@ -447,7 +464,7 @@ public class FileManagementService {
 
     //endregion
 
-   //region import from binary
+    //region import from binary
 
     /**
      * Imports a list of artists from a binary file.
@@ -470,10 +487,12 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs reading from the file.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public List<Artist> importArtistsFromBinary(String path, String artistsFileName) throws IOException, ClassNotFoundException {
+    public List<Artist> importArtistsFromBinary(String path, String artistsFileName) throws IOException, ClassNotFoundException //YA
+    {
         // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
         try (FileInputStream fileInputStream = new FileInputStream(path + artistsFileName);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream))
+        {
             return (List<Artist>) objectInputStream.readObject();
         }
     }
@@ -500,13 +519,16 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs reading from the file.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public List<Song> importSongsFromBinary(String path, String songsFileName) throws IOException, ClassNotFoundException {
+    public List<Song> importSongsFromBinary(String path, String songsFileName) throws IOException, ClassNotFoundException //YA
+    {
         // Read the list of songs from the file
         List<Song> songs = new ArrayList<>();
         // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
         try(FileInputStream fileInputStream = new FileInputStream(path + songsFileName);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
-            while (objectInputStream.available() > 0) {
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream))
+        {
+            while (objectInputStream.available() > 0)
+            {
                 Song songFromFile = (Song) objectInputStream.readObject();
                 songs.add(songFromFile);
             }
@@ -536,8 +558,16 @@ public class FileManagementService {
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
     public List<PlayList> importPlayListsFromBinary(String path, String playListsFileName) throws IOException, ClassNotFoundException {
-        // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
-        return new ArrayList<>();
+        // Try-with-resources automatically closes resources
+        try (FileInputStream fis = new FileInputStream(path + "/" + playListsFileName);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+            // Cast the read object to a List of PlayList objects
+            List<PlayList> playlists = (List<PlayList>) ois.readObject();
+
+            // Return the list of playlists
+            return playlists;
+        }
     }
 
     /**
@@ -562,9 +592,18 @@ public class FileManagementService {
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
     public List<Customer> importCustomersFromBinary(String path, String customersFileName) throws IOException, ClassNotFoundException {
-        // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
-       return new ArrayList<>();
+        // Try-with-resources automatically closes resources
+        try (FileInputStream fis = new FileInputStream(path + "/" + customersFileName);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+            // Cast the read object to a List of Customer objects
+            List<Customer> customers = (List<Customer>) ois.readObject();
+
+            // Return the list of customers
+            return customers;
+        }
     }
+
 
     /**
      * Imports a list of objects from a binary file.
@@ -597,8 +636,19 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs reading from the file.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public <T> List<T> importObjectsFromBinary(String path, String fileName) throws IOException, ClassNotFoundException {
+    public <T> List<T> importObjectsFromBinary(String path, String fileName) throws IOException, ClassNotFoundException //YA
+    {
+        List<T> objects = new ArrayList<>();
         // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
+        try (FileInputStream fileInputStream = new FileInputStream(path + fileName);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream))
+        {
+            while (objectInputStream.available() > 0)
+            {
+                T objectFromFile = (T) objectInputStream.readObject();
+                objects.add(objectFromFile);
+            }
+        }
         return new ArrayList<>();
     }
 
@@ -620,12 +670,15 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportArtistsToBinary(String defaultPath, String defaultArtistsFileName, List<Artist> artists) throws IOException {
-        // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
+        // Try-with-resources to automatically close resources
         try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPath + defaultArtistsFileName);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+
+            // Use the actual objectOutputStream to write the artists
             objectOutputStream.writeObject(artists);
         }
     }
+
 
     /**
      * Exports a list of songs to a binary file.
@@ -640,11 +693,14 @@ public class FileManagementService {
      * @param songs The list of Song objects to export.
      * @throws IOException If an I/O error occurs writing to the file.
      */
-    public void exportSongsToBinary(String path, String songsFileName, List<Song> songs) throws IOException {
+    public void exportSongsToBinary(String path, String songsFileName, List<Song> songs) throws IOException
+    { //YA
         // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
         try (FileOutputStream fileOutputStream = new FileOutputStream(path + songsFileName);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-            for (Song song : songs) {
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream))
+        {
+            for (Song song : songs)
+            {
                 objectOutputStream.writeObject(song);
             }
         }
@@ -660,13 +716,19 @@ public class FileManagementService {
      *
      * @param path The path to the binary file.
      * @param playListsFileName The name of the binary file.
-     * @param playLists The list of PlayList objects to export.
+     * @param playlists The list of PlayList objects to export.
      * @throws IOException If an I/O error occurs writing to the file.
      */
-    public void exportPlayListsToBinary(String path, String playListsFileName, List<PlayList> playLists) throws IOException {
-        // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
+    public void exportPlaylistsToBinary(String path, String playListsFileName, List<PlayList> playlists) throws IOException {
+        // Try-with-resources automatically closes resources
+        try (FileOutputStream fos = new FileOutputStream(path + "/" + playListsFileName);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
+            // Write the list of playlists to the file
+            oos.writeObject(playlists);
+        }
     }
+
 
     /**
      * Exports a list of customers to a binary file.
@@ -682,9 +744,15 @@ public class FileManagementService {
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportCustomersToBinary(String path, String customersFileName, List<Customer> customers) throws IOException {
-        // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
+        // Try-with-resources automatically closes resources
+        try (FileOutputStream fos = new FileOutputStream(path + "/" + customersFileName);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
+            // Write the list of customers to the file
+            oos.writeObject(customers);
+        }
     }
+
     //endregion
 
 }
