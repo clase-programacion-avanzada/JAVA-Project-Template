@@ -101,7 +101,7 @@ public class AdminController {
      * @return a list of all songs.
      */
     public List<String> getAllSongs() {
-       return new ArrayList<>();
+        return new ArrayList<>();
     }
 
     /**
@@ -142,7 +142,7 @@ public class AdminController {
         Customer customerLastNamed = customerService.searchCustomerByUsername(lastName);
         Customer customerAge = customerService.searchCustomerByUsername(Integer.toString(age));
 
-        customerService.addCustomer(username, password, name, lastName, age);
+        customerService.addCustomer(String.valueOf(customerUsername), String.valueOf(customerPassword), String.valueOf(customerName), String.valueOf(customerLastNamed), Integer.valueOf(String.valueOf(customerAge)));
     }
 
     /**
@@ -192,8 +192,21 @@ public class AdminController {
      * @param artists the set of artist IDs.
      * @throws NotFoundException if any of the artists are not found in the database.
      */
-    public void addSongToDatabase(String name, String genre, int duration, String album, Set<String> artists) {
+    public void addSongToDatabase(String name, String genre, int duration, String album, Set<String> artists) throws NotFoundException {
 
+        Artist artist = (Artist) artistService.getArtistsByIds(artists);
+        if(artist == null){
+            throw new IllegalArgumentException("El ID del artista es nulo o erróneo.");
+        }
+
+        validateSongAttributes(name, genre, duration);
+
+        List<Artist> artistsUUID = (List<Artist>) artist;
+
+        if(artistsUUID == null){
+            throw new NotFoundException("Artistas no encontrados.");
+        }
+        songService.addSong(name, genre, duration, album, artistsUUID);
 
     }
 
@@ -211,8 +224,19 @@ public class AdminController {
      * @param duration the duration of the song.
      * @throws IllegalArgumentException if the name is null or empty, the genre is null or empty, or the duration is less than or equal to 0.
      */
-    public static void validateSongAttributes(String name, String genre, int duration) {
-
+    public static void validateSongAttributes(String name, String genre, int duration){
+        Song songName = Song.getUnknownSong(name);
+        if(songName == null){
+            throw new IllegalArgumentException("El nombre proporcionado no existe o esta vacío.");
+        }
+        Song songGenre = Song.getUnknownSong(genre);
+        if(songGenre == null){
+            throw new IllegalArgumentException("El genero proporcionado no existe o esta vacío.");
+        }
+        int songDuration = duration;
+        if(songDuration >= 0){
+            throw new IllegalArgumentException("La duración de canción es nula.");
+        }
 
     }
 
@@ -231,10 +255,15 @@ public class AdminController {
      * @param songId the ID of the song.
      * @throws NotFoundException if the song is not found in the database.
      */
-    public void deleteSongFromDatabase(String songId)  {
+    public void deleteSongFromDatabase(String songId) throws NotFoundException {
+        Song songID = songService.getSongsById().get(songId);
+        if(songID == null){
+            throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
+        }
 
+        playListService.deleteSongFromPlayLists(songId);
 
-
+        songService.deleteSong(songId);
     }
 
     /**
@@ -253,10 +282,19 @@ public class AdminController {
      * @param artistId the ID of the artist.
      * @throws NotFoundException if the artist is not found in the database.
      */
-    public void deleteArtistFromDatabase(String artistId) {
+    public void deleteArtistFromDatabase(String artistId) throws NotFoundException, IllegalArgumentException {
+        Artist checkArtist = artistService.getMapOfArtistsById().get(artistId);
+        if(checkArtist == null){
+            throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
+        }
 
+        List<Song> allSongsByArtist = songService.searchSongsByArtistId(artistId);
 
-
+        for(int i = 0; i < allSongsByArtist.size(); i++){
+            String songs = allSongsByArtist.toString();
+            deleteSongFromDatabase(songs);
+        }
+        deleteArtistFromDatabase(artistId);
     }
 
     /**

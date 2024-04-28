@@ -254,7 +254,7 @@ public class AdminView {
      * 4. Data Deletion: The method calls the deleteSongFromDatabase method of the adminController object, passing the songId as a parameter. This operation deletes the song from the database.
      * 5. Confirmation Message: Finally, the method prints a message to the console to confirm that the song has been deleted.
      */
-    private void deleteSongFromDatabase()  {
+    private void deleteSongFromDatabase() throws NotFoundException {
 
         System.out.println("Eliminar canción de la base de datos y las playlists en las que exista.");
         System.out.println("Estas son las canciones disponibles:");

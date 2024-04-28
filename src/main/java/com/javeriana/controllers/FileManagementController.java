@@ -89,7 +89,7 @@ public class FileManagementController {
                                String songsFileName,
                                String playListsFileName,
                                String customersFileName)
-        throws IOException {
+            throws IOException {
 
         String artistsCSVFileName = artistsFileName + extension;
         List<Artist> artists = fileManagementService.importArtistsFromCSV(path, separator ,artistsCSVFileName);
@@ -101,9 +101,15 @@ public class FileManagementController {
         songService.loadSongs(songs);
         Map<String, Song> songsById = songService.getSongsById();
 
+        String playListsCSVFileName = playListsFileName + extension;
+        List<PlayList> playLists = fileManagementService.importPlayListsFromCSV(path, separator, playListsCSVFileName, songsById);
+        playListService.loadPlayLists(playLists);
+        Map<String, PlayList> playListById = playListService.getPlayListsById();
 
-
-
+        String customersCSVFileName = customersFileName + extension;
+        List<Customer> customers = fileManagementService.importCustomersFromCSV(path, separator, customersCSVFileName, artistsById, playListById);
+        customerService.loadCustomers(customers);
+        Map<String, Customer> customerById = (Map<String, Customer>) customerService.getCustomers();
     }
 
     /**
@@ -135,7 +141,7 @@ public class FileManagementController {
                                String customersFileName,
                                String playListsFileName,
                                String songsFileName)
-        throws IOException {
+            throws IOException {
         List<Artist> artists = artistService.getArtists();
         String artistsCSVFileName = artistsFileName + extension;
         fileManagementService.exportArtistsToCSV(path, separator, artistsCSVFileName, artists);
@@ -144,8 +150,13 @@ public class FileManagementController {
         String songsCSVFileName = songsFileName + extension;
         fileManagementService.exportSongsToCSV(path, separator, songsCSVFileName, songs);
 
+        List<PlayList> playLists = playListService.getPlayLists();
+        String playListsCSVFileName = playListsFileName + extension;
+        fileManagementService.exportPlayListsToCSV(path, separator, playListsCSVFileName, playLists);
 
-
+        List<Customer> customers = customerService.getCustomers();
+        String customersCSVFileName = customersFileName + extension;
+        fileManagementService.exportCustomersToCSV(path, separator, customersCSVFileName, customers);
     }
 
     /**
@@ -184,9 +195,13 @@ public class FileManagementController {
         String songsSpotifyFileName = songsFileName + extension;
         fileManagementService.exportSongsToBinary(path, songsSpotifyFileName, songs);
 
+        List<PlayList> playLists = playListService.getPlayLists();
+        String playListsSpotifyFileName = playListsFileName + extension;
+        fileManagementService.exportPlayListsToBinary(path, playListsSpotifyFileName, playLists);
 
-
-
+        List<Customer> customers = customerService.getCustomers();
+        String customersSpotifyFileName = customersFileName + extension;
+        fileManagementService.exportCustomersToBinary(path, customersSpotifyFileName, customers);
     }
 
     /**
@@ -217,7 +232,7 @@ public class FileManagementController {
                                  String playListsFileName,
                                  String customersFileName
 
-                                 ) throws IOException, ClassNotFoundException {
+    ) throws IOException, ClassNotFoundException {
 
         List<Artist> artists = fileManagementService.importArtistsFromBinary(path, artistsFileName + extension);
         artistService.loadArtists(artists);
@@ -225,7 +240,11 @@ public class FileManagementController {
         List<Song> songs = fileManagementService.importSongsFromBinary(path, songsFileName + extension);
         songService.loadSongs(songs);
 
+        List<PlayList> playLists = fileManagementService.importPlayListsFromBinary(path, playListsFileName + extension);
+        playListService.loadPlayLists(playLists);
 
+        List<Customer> customers = fileManagementService.importCustomersFromBinary(path, customersFileName + extension);
+        customerService.loadCustomers(customers);
 
     }
 }
