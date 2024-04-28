@@ -137,12 +137,7 @@ public class AdminController {
         if (customerUsername != null) {
             throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
         }
-        Customer customerPassword = customerService.searchCustomerByUsername(password);
-        Customer customerName = customerService.searchCustomerByUsername(name);
-        Customer customerLastNamed = customerService.searchCustomerByUsername(lastName);
-        Customer customerAge = customerService.searchCustomerByUsername(Integer.toString(age));
-
-        customerService.addCustomer(String.valueOf(customerUsername), String.valueOf(customerPassword), String.valueOf(customerName), String.valueOf(customerLastNamed), Integer.valueOf(String.valueOf(customerAge)));
+        customerService.addCustomer(username, password, name, lastName, age);
     }
 
     /**
