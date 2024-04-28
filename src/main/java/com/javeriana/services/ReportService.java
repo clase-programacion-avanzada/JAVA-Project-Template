@@ -34,7 +34,7 @@ public class ReportService {
             artistCounts.merge(artist.getName(), 1, Integer::sum);
         }
 
-        return new HashMap<>();
+        return artistCounts;
     }
 
     /**
@@ -77,6 +77,6 @@ public class ReportService {
             songCounts.merge(song.getId(), 1, Integer::sum);
         }
 
-        return new HashMap<>();
+        return songCounts;
     }
 }

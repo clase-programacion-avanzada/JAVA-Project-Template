@@ -193,7 +193,7 @@ public class CustomerController {
     public boolean deleteSongFromPlayList(String playListId, String songId) {
         playListService.deleteSongFromPlayList(playListId, songId);
 
-        if(songId != playListId){
+        if(!Objects.equals(songId, playListId)){
             return true;
         }else{
         return false;
@@ -252,7 +252,7 @@ public class CustomerController {
      */
     public List<String> getFollowedArtists() throws WrongLogInException {
         boolean customerLogged = customerService.isCustomerLogged();
-        if(customerLogged = false){
+        if(!customerLogged){
             throw new WrongLogInException("El usuario no ha iniciado sesión.");
         }
         return customerService.getFollowedArtistsByLoggedUser();

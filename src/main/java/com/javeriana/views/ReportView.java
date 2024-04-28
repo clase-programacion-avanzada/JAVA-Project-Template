@@ -1,6 +1,8 @@
 package com.javeriana.views;
 
 import com.javeriana.controllers.ReportController;
+import com.javeriana.exceptions.WrongLogInException;
+
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,7 @@ public class ReportView {
             } catch (NumberFormatException | InputMismatchException e) {
                 System.out.println("Ingrese un número válido");
 
-            } catch (Exception e) {
+            } catch (Exception | WrongLogInException e) {
                 System.out.println("Ocurrió un error: " + e.getMessage());
             }
 
@@ -86,7 +88,7 @@ public class ReportView {
         System.out.println("La canción más escuchada es: " + mostAddedSong);
     }
 
-    private void showMostFollowedArtists() {
+    private void showMostFollowedArtists() throws WrongLogInException {
         System.out.println("Reporte de artistas más seguidos");
         Map<String, Integer> reportOfFollowedArtists = reportController.showMostFollowedArtists();
 

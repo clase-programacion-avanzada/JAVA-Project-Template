@@ -753,6 +753,10 @@ public class FileManagementService
         }
     }
 
-    //endregion
+    public void exportPlayListsToBinary(String path, String playListsSpotifyFileName, List<PlayList> playLists) {
+    }
+
+  //endregion
 
 }
+
