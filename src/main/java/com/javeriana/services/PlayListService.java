@@ -57,7 +57,7 @@ public class PlayListService {
      */
     public PlayList addPlayList(String name) {
         if (name == null || name.isEmpty()){
-            throw new IllegalArgumentException("The name is null or empty");
+            throw new IllegalArgumentException("El nombre es nulo o esta vacio");
         }
         PlayList newPlayList = new PlayList(name);
         playLists.add(newPlayList);

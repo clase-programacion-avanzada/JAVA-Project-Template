@@ -63,7 +63,7 @@ public class SongService {
     public void addSong(String name, String genre, int durationInSeconds, String album, List<Artist> artistsList) {
         AdminController.validateSongAttributes(name, genre, durationInSeconds);
         if (album == null || album.isEmpty()) {
-            throw new IllegalArgumentException("Album cannot be null or empty");
+            throw new IllegalArgumentException("El album no puede ser nulo o estar vacio");
         }
         Song song = new Song(name, genre, durationInSeconds, album);
         song.addArtists(artistsList);
@@ -163,7 +163,7 @@ public class SongService {
     public void deleteSong(String songId) throws NotFoundException {
         Song song = searchSongById(songId);
         if (song == null) {
-            throw new NotFoundException("Song not found");
+            throw new NotFoundException("Canción no encontrada");
         }
         songs.remove(song);
     }

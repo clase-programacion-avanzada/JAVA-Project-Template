@@ -101,19 +101,19 @@ public class CustomerService {
      */
     public void addCustomer(String username, String password, String name, String lastName, int age) throws AlreadyExistsException {
         if (name.isEmpty() || lastName.isEmpty()) {
-            throw new IllegalArgumentException("Name and last name cannot be empty.");
+            throw new IllegalArgumentException("El nombre y el apellido no pueden estar vacios.");
         }
         if (!username.matches(USERNAME_PATTERN)) {
-            throw new IllegalArgumentException("Invalid username. Usernames must start with a letter and can contain letters, digits, and underscores. Must be between 8 and 30 characters long.");
+            throw new IllegalArgumentException("Username invalido. Los usernames tienen que iniciar con una letra y deben contener letras y digitos. Debe tener entre 8 y 30 caracteres.");
         }
         if (!password.matches(PASSWORD_PATTERN)) {
-            throw new IllegalArgumentException("Invalid password. Passwords must contain at least one uppercase letter, one lowercase letter, one digit, one special character, and be at least 8 characters long.");
+            throw new IllegalArgumentException("Contraseña inválida. Las contraseñas deben contener al menos una letra mayúscula, una letra minúscula, un dígito, un carácter especial y tener al menos 8 caracteres de longitud.");
         }
         if (age < MINIMUM_AGE) {
-            throw new IllegalArgumentException("Invalid age. Age must be at least 14.");
+            throw new IllegalArgumentException("Edad invalida. Debe ser minimo 14.");
         }
         if (customers.stream().anyMatch(customer -> customer.getUsername().equals(username))) {
-            throw new AlreadyExistsException("Username already taken.");
+            throw new AlreadyExistsException("Username invalido.");
         }
         Customer customer = new Customer(username, password, name, lastName, age);
         customers.add(customer);
@@ -225,7 +225,7 @@ public class CustomerService {
      */
     public void addPlayListToLoggedCustomer(PlayList newPlayList) throws WrongLogInException {
         if (this.loggedCustomer == null) {
-            throw new WrongLogInException("No customer is logged in.");
+            throw new WrongLogInException("No hay ningún cliente logeado.");
         }
         this.loggedCustomer.addPlayList(newPlayList);
     }
@@ -244,7 +244,7 @@ public class CustomerService {
      */
     public List<String> getLoggedCustomerPlayLists() throws WrongLogInException {
         if (this.loggedCustomer == null) {
-            throw new WrongLogInException("No customer is logged in.");
+            throw new WrongLogInException("No hay ningún cliente conectado.");
         }
         List<PlayList> playLists = this.loggedCustomer.getPlayLists();
         List<String> playListNames = new ArrayList<>();
@@ -267,7 +267,7 @@ public class CustomerService {
      */
     public void followArtist(Artist artist) throws AlreadyExistsException {
         if (!this.loggedCustomer.followArtist(artist)) {
-            throw new AlreadyExistsException("The artist is already being followed by the customer.");
+            throw new AlreadyExistsException("El artista ya es seguido por el cliente");
         }
     }
 
@@ -320,7 +320,7 @@ public class CustomerService {
         Customer customer = searchCustomerByUsername(username);
 
         if (customer == null) {
-            throw new IllegalArgumentException("The customer does not exist");
+            throw new IllegalArgumentException("El cliente no existe");
         }
 
         this.customers.remove(customer);
@@ -339,7 +339,7 @@ public class CustomerService {
      */
     public List<String> getFollowedArtistsByLoggedUser() throws WrongLogInException {
         if (this.loggedCustomer == null) {
-            throw new WrongLogInException("No customer is logged in.");
+            throw new WrongLogInException("No hay ningún cliente conectado.");
         }
         List<Artist> followedArtists = this.loggedCustomer.getFollowedArtists();
         List<String> followedArtistsNames = new ArrayList<>();
