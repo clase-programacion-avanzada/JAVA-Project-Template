@@ -189,7 +189,7 @@ public class AdminController {
      */
     public void addSongToDatabase(String name, String genre, int duration, String album, Set<String> artists) throws NotFoundException {
 
-        Artist artist = (Artist) artistService.getArtistsByIds(artists);
+        List<Artist> artist = artistService.getArtistsByIds(artists);
         if(artist == null){
             throw new IllegalArgumentException("El ID del artista es nulo o erróneo.");
         }
@@ -226,7 +226,7 @@ public class AdminController {
         if(genre == null){
             throw new IllegalArgumentException("El genero proporcionado no existe o esta vacío.");
         }
-        if(duration >= 0){
+        if(duration <= 0){
             throw new IllegalArgumentException("La duración de canción es nula.");
         }
     }
