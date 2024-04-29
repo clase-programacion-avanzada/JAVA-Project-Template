@@ -277,7 +277,7 @@ public class AdminController {
      * @param artistId the ID of the artist.
      * @throws NotFoundException if the artist is not found in the database.
      */
-    public void deleteArtistFromDatabase(String artistId) throws NotFoundException, IllegalArgumentException {
+    public void deleteArtistFromDatabase(String artistId)  {
         Artist checkArtist = artistService.getMapOfArtistsById().get(artistId);
         if(checkArtist == null){
             throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
@@ -287,7 +287,11 @@ public class AdminController {
 
         for(int i = 0; i < allSongsByArtist.size(); i++){
             String songs = allSongsByArtist.toString();
-            deleteSongFromDatabase(songs);
+            try {
+                deleteSongFromDatabase(songs);
+            } catch (NotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
         deleteArtistFromDatabase(artistId);
     }
