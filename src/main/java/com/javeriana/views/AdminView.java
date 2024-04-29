@@ -3,6 +3,8 @@ package com.javeriana.views;
 import com.javeriana.controllers.AdminController;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
+import com.javeriana.models.PlayList;
+
 import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -139,7 +141,13 @@ public class AdminView {
      * 3. End Message: After the loop, the method prints a message to indicate the end of the playlist list.
      */
     private void showAllPlaylists() {
+        List<String> playlists = adminController.getAllPlaylists();
 
+        for (int i = 0; i < playlists.size(); i++) {
+            System.out.println(i + ") " + playlists.get(i));
+        }
+
+        System.out.println("Fin de la lista de PlayLists.");
     }
 
     /**
@@ -170,8 +178,13 @@ public class AdminView {
      * 3. End Message: After the loop, the method prints a message to indicate the end of the song list.
      */
     private void showAllSongs() {
+        List<String> songs = adminController.getAllSongs();
 
+        for (int i = 0; i < songs.size(); i++) {
+            System.out.println(i + ") " + songs.get(i));
+        }
 
+        System.out.println("Fin de la lista de canciones.");
     }
 
     /**
@@ -183,6 +196,13 @@ public class AdminView {
      * 3. End Message: After the loop, the method prints a message to indicate the end of the customer list.
      */
     private void showAllCustomers() {
+        List<String> customers = adminController.getAllCustomers();
+
+        for (int i = 0; i < customers.size(); i++) {
+            System.out.println(i + ") " + customers.get(i));
+        }
+
+        System.out.println("Fin de la lista de usuarios.");
 
     }
 
