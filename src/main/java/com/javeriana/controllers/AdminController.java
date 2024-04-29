@@ -196,7 +196,7 @@ public class AdminController {
 
         validateSongAttributes(name, genre, duration);
 
-        List<Artist> artistsUUID = (List<Artist>) artist;
+        List<Artist> artistsUUID = artistService.getArtistsByIds(artists);
 
         if(artistsUUID == null){
             throw new NotFoundException("Artistas no encontrados.");
@@ -220,19 +220,15 @@ public class AdminController {
      * @throws IllegalArgumentException if the name is null or empty, the genre is null or empty, or the duration is less than or equal to 0.
      */
     public static void validateSongAttributes(String name, String genre, int duration){
-        Song songName = Song.getUnknownSong(name);
-        if(songName == null){
+        if(name == null){
             throw new IllegalArgumentException("El nombre proporcionado no existe o esta vacío.");
         }
-        Song songGenre = Song.getUnknownSong(genre);
-        if(songGenre == null){
+        if(genre == null){
             throw new IllegalArgumentException("El genero proporcionado no existe o esta vacío.");
         }
-        int songDuration = duration;
-        if(songDuration >= 0){
+        if(duration >= 0){
             throw new IllegalArgumentException("La duración de canción es nula.");
         }
-
     }
 
     /**
