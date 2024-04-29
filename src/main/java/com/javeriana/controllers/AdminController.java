@@ -3,6 +3,8 @@ package com.javeriana.controllers;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
 import com.javeriana.models.Artist;
+import com.javeriana.models.Customer;
+import com.javeriana.models.PlayList;
 import com.javeriana.models.Song;
 import com.javeriana.services.ArtistService;
 import com.javeriana.services.CustomerService;
@@ -99,7 +101,7 @@ public class AdminController {
      * @return a list of all songs.
      */
     public List<String> getAllSongs() {
-       return new ArrayList<>();
+        return new ArrayList<>();
     }
 
     /**
@@ -130,9 +132,12 @@ public class AdminController {
      * @param age the age of the customer.
      * @throws AlreadyExistsException if a customer with the same username already exists in the database.
      */
-    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age) {
-
-
+    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age) throws AlreadyExistsException {
+        Customer customerUsername = customerService.searchCustomerByUsername(username);
+        if (customerUsername != null) {
+            throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
+        }
+        customerService.addCustomer(username, password, name, lastName, age);
     }
 
     /**
@@ -152,8 +157,12 @@ public class AdminController {
      * @param username the username of the customer to delete.
      */
     public void deleteCustomerFromDatabase(String username) {
+        List<UUID> playListIds = new ArrayList<>();
+        playListIds = customerService.getCustomerPlayListsIds(username);
 
+        playListService.deletePlayLists(playListIds);
 
+        customerService.deleteCustomer(username);
 
     }
 
@@ -178,8 +187,21 @@ public class AdminController {
      * @param artists the set of artist IDs.
      * @throws NotFoundException if any of the artists are not found in the database.
      */
-    public void addSongToDatabase(String name, String genre, int duration, String album, Set<String> artists) {
+    public void addSongToDatabase(String name, String genre, int duration, String album, Set<String> artists) throws NotFoundException {
 
+        List<Artist> artist = artistService.getArtistsByIds(artists);
+        if(artist == null){
+            throw new IllegalArgumentException("El ID del artista es nulo o erróneo.");
+        }
+
+        validateSongAttributes(name, genre, duration);
+
+        List<Artist> artistsUUID = artistService.getArtistsByIds(artists);
+
+        if(artistsUUID == null){
+            throw new NotFoundException("Artistas no encontrados.");
+        }
+        songService.addSong(name, genre, duration, album, artistsUUID);
 
     }
 
@@ -197,9 +219,16 @@ public class AdminController {
      * @param duration the duration of the song.
      * @throws IllegalArgumentException if the name is null or empty, the genre is null or empty, or the duration is less than or equal to 0.
      */
-    public static void validateSongAttributes(String name, String genre, int duration) {
-
-
+    public static void validateSongAttributes(String name, String genre, int duration){
+        if(name == null){
+            throw new IllegalArgumentException("El nombre proporcionado no existe o esta vacío.");
+        }
+        if(genre == null){
+            throw new IllegalArgumentException("El genero proporcionado no existe o esta vacío.");
+        }
+        if(duration <= 0){
+            throw new IllegalArgumentException("La duración de canción es nula.");
+        }
     }
 
     /**
@@ -217,10 +246,15 @@ public class AdminController {
      * @param songId the ID of the song.
      * @throws NotFoundException if the song is not found in the database.
      */
-    public void deleteSongFromDatabase(String songId)  {
+    public void deleteSongFromDatabase(String songId) throws NotFoundException {
+        Song songID = songService.getSongsById().get(songId);
+        if(songID == null){
+            throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
+        }
 
+        playListService.deleteSongFromPlayLists(songId);
 
-
+        songService.deleteSong(songId);
     }
 
     /**
@@ -239,10 +273,19 @@ public class AdminController {
      * @param artistId the ID of the artist.
      * @throws NotFoundException if the artist is not found in the database.
      */
-    public void deleteArtistFromDatabase(String artistId) {
+    public void deleteArtistFromDatabase(String artistId) throws NotFoundException {
+        Artist checkArtist = artistService.getMapOfArtistsById().get(artistId);
+        if(checkArtist == null){
+            throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
+        }
 
+        List<Song> allSongsByArtist = songService.searchSongsByArtistId(artistId);
 
-
+        for(int i = 0; i < allSongsByArtist.size(); i++){
+            String songs = allSongsByArtist.toString();
+            deleteSongFromDatabase(songs);
+        }
+        artistService.deleteArtist(artistId);
     }
 
     /**

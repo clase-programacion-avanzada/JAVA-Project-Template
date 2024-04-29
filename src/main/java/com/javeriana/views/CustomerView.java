@@ -97,7 +97,7 @@ public class CustomerView {
 
     }
 
-    private void followArtist() throws NotFoundException, AlreadyExistsException {
+    private void followArtist() throws NotFoundException, AlreadyExistsException, WrongLogInException {
 
         System.out.println("Seguir artista.");
         System.out.println("Estos son los artistas disponibles:");
@@ -200,7 +200,7 @@ public class CustomerView {
 
     }
 
-    private void showMyPlayLists() {
+    private void showMyPlayLists() throws WrongLogInException {
 
         List<String> playLists = customerController.getLoggedCustomerPlaylists();
         System.out.println("Mis playlist:");
@@ -212,7 +212,7 @@ public class CustomerView {
 
     }
 
-    private void addNewPlayList()  {
+    private void addNewPlayList() throws WrongLogInException {
         System.out.println("Creando una nueva playlist.");
         System.out.println("Ingrese el nombre de la playlist:");
         String playListName = scanner.nextLine();

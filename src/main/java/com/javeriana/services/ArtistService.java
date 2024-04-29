@@ -121,6 +121,13 @@ public class ArtistService {
      * @return The Artist object if found, null otherwise.
      */
     public Artist searchArtistById(String artistId) {
+        UUID uuid = UUID.fromString(artistId);
+        for (Artist artist : artists){
+            if (artist.getId().equals(uuid)){
+                return artist;
+            }
+        }
+
         return Artist.GetUnknownArtist(UUID.randomUUID().toString());
     }
 
@@ -163,7 +170,6 @@ public class ArtistService {
      * @return The Artist object if found, null otherwise.
      */
     public Artist searchArtistByName(String name) {
-
         for (Artist artist : artists) {
             if (artist.getName().equals(name)) {
                 return artist;
@@ -190,7 +196,15 @@ public class ArtistService {
      * @return A list of Artist objects.
      * @throws NotFoundException If an artist with the given ID does not exist.
      */
-    public List<Artist> getArtistsByIds(Set<String> artists)  {
+    public List<Artist> getArtistsByIds(Set<String> artists) throws NotFoundException {
+        List<Artist> foundArtists = new ArrayList<>();
+        for (String artistId : artists){
+            Artist artist = searchArtistById(artistId);
+            if (artist == null){
+                throw new NotFoundException("El artista con el id " + artistId + " no existe");
+            }
+            foundArtists.add(artist);
+        }
         return new ArrayList<>();
     }
 
@@ -208,7 +222,12 @@ public class ArtistService {
      * @param artistId The ID of the artist to delete.
      * @throws NotFoundException If an artist with the given ID does not exist.
      */
-    public void deleteArtist(String artistId)  {
+    public void deleteArtist(String artistId) throws NotFoundException {
+        Artist artist = searchArtistById(artistId);
+        if (artist == null){
+            throw new NotFoundException("El artista con el id " + artistId + " no existe");
+        }
+        artists.remove(artist);
 
     }
 

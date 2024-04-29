@@ -4,6 +4,7 @@ import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
 import com.javeriana.exceptions.WrongLogInException;
 import com.javeriana.models.Artist;
+import com.javeriana.models.Customer;
 import com.javeriana.models.PlayList;
 import com.javeriana.models.Song;
 import com.javeriana.services.ArtistService;
@@ -11,7 +12,9 @@ import com.javeriana.services.CustomerService;
 import com.javeriana.services.PlayListService;
 import com.javeriana.services.SongService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The CustomerController class is responsible for handling customer-related tasks in the application.
@@ -90,8 +93,13 @@ public class CustomerController {
      * @param playListName the name of the new playlist.
      * @throws WrongLogInException if no customer is currently logged in.
      */
-    public void addNewPlayList(String playListName) {
+    public void addNewPlayList(String playListName) throws WrongLogInException {
+        if(!customerService.isCustomerLogged()){
+            throw new WrongLogInException("El inicio de sesión ha fallado.");
+        }
+        PlayList newPlayList = playListService.addPlayList(playListName);
 
+        customerService.addPlayListToLoggedCustomer(newPlayList);
 
     }
 
@@ -101,9 +109,8 @@ public class CustomerController {
      * @return a list of the logged in customer's playlists.
      * @throws WrongLogInException if no customer is currently logged in.
      */
-    public List<String> getLoggedCustomerPlaylists()  {
-
-        return new ArrayList<>();
+    public List<String> getLoggedCustomerPlaylists() throws WrongLogInException {
+        return customerService.getLoggedCustomerPlayLists();
     }
 
     /**
@@ -133,9 +140,15 @@ public class CustomerController {
      * @throws NotFoundException if the playlist or the song is not found.
      */
     public void addSongToPlayList(String playListId, String songId) throws NotFoundException {
-
-
-
+    PlayList playList = playListService.getPlayListById(playListId);
+    if(playList == null){
+        throw new NotFoundException("PlayList no encontrada.");
+    }
+    Song song = songService.getSongsById().get(songId);
+        if(song == null){
+            throw new NotFoundException("Canción no encontrada.");
+        }
+        playList.addSong(songService.getSongsById().get(songId));
     }
 
     /**
@@ -154,8 +167,13 @@ public class CustomerController {
      * @throws NotFoundException if the playlist is not found.
      */
     public List<String> getAllSongsFromPlayList(String playListId) throws NotFoundException {
+        PlayList playList = playListService.getPlayListById(playListId);
+        if(playList == null){
+            throw new NotFoundException("PlayList no encontrada.");
+        }
+        List<Song> allSongs = playListService.getAllSongsInPlayLists();
 
-       return new ArrayList<>();
+       return Collections.singletonList(String.valueOf(allSongs));
     }
 
     /**
@@ -173,9 +191,13 @@ public class CustomerController {
      * @return a boolean indicating whether the song was successfully deleted from the playlist.
      */
     public boolean deleteSongFromPlayList(String playListId, String songId) {
+        playListService.deleteSongFromPlayList(playListId, songId);
 
+        if(!Objects.equals(songId, playListId)){
+            return true;
+        }else{
         return false;
-
+}
     }
 
     /**
@@ -203,10 +225,17 @@ public class CustomerController {
      * @throws NotFoundException if the artist is not found.
      * @throws AlreadyExistsException if the artist is already followed.
      */
-    public void followArtist(String artistId) {
-
-
-
+    public void followArtist(String artistId) throws NotFoundException, WrongLogInException, AlreadyExistsException {
+    Artist artist = (Artist) artistService.getArtistsByIds(Collections.singleton(artistId));
+    if(artist == null){
+        throw new NotFoundException("Artista no encontrado.");
+    }
+    List<String> followed = getFollowedArtists();
+    if(Objects.equals(followed, Collections.singletonList(artistId)))
+        throw new AlreadyExistsException("El artista ya esta en seguidos.");
+    else{
+        followArtist(artistId);
+    }
     }
 
     /**
@@ -222,7 +251,10 @@ public class CustomerController {
      * @throws WrongLogInException if no customer is currently logged in.
      */
     public List<String> getFollowedArtists() throws WrongLogInException {
-
+        boolean customerLogged = customerService.isCustomerLogged();
+        if(!customerLogged){
+            throw new WrongLogInException("El usuario no ha iniciado sesión.");
+        }
         return customerService.getFollowedArtistsByLoggedUser();
     }
 

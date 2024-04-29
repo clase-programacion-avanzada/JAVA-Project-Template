@@ -61,10 +61,13 @@ public class SongService {
      * @param artistsList The list of artists of the new song.
      */
     public void addSong(String name, String genre, int durationInSeconds, String album, List<Artist> artistsList) {
-
-
-
-
+        AdminController.validateSongAttributes(name, genre, durationInSeconds);
+        if (album == null || album.isEmpty()) {
+            throw new IllegalArgumentException("El album no puede ser nulo o estar vacio");
+        }
+        Song song = new Song(name, genre, durationInSeconds, album);
+        song.addArtists(artistsList);
+        songs.add(song);
     }
 
     /**
@@ -158,7 +161,11 @@ public class SongService {
      * @throws NotFoundException If no song with the given ID exists.
      */
     public void deleteSong(String songId) throws NotFoundException {
-
+        Song song = searchSongById(songId);
+        if (song == null) {
+            throw new NotFoundException("Canción no encontrada");
+        }
+        songs.remove(song);
     }
 
     /**
@@ -173,6 +180,16 @@ public class SongService {
      * @return A list of songs by the artist with the given ID.
      */
     public List<Song> searchSongsByArtistId(String artistId) {
+        List<Song> songsByArtist = new ArrayList<>();
+        for (Song song : songs) {
+            for (Artist artist : song.getArtists()) {
+                if (artist.getId().equals(UUID.fromString(artistId))) {
+                    songsByArtist.add(song);
+                    break;
+                }
+            }
+        }
         return new ArrayList<>();
     }
+
 }

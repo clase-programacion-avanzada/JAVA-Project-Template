@@ -29,8 +29,12 @@ public class ReportService {
      * @return A map of artist names to the number of times they are followed.
      */
     public Map<String, Integer> getMostFollowedArtists(List<Artist> followedArtists) {
+        Map<String, Integer> artistCounts = new HashMap<>();
+        for (Artist artist : followedArtists)  {
+            artistCounts.merge(artist.getName(), 1, Integer::sum);
+        }
 
-       return new HashMap<>();
+        return artistCounts;
     }
 
     /**
@@ -45,7 +49,14 @@ public class ReportService {
      * @return The ID of the song with the maximum count.
      */
     public UUID maxSong(Map<UUID, Integer> mostAddedSongs) {
-
+        UUID maxSong = null;
+        for (Map.Entry<UUID, Integer> entry : mostAddedSongs.entrySet()){
+            Integer max = null;
+            if (entry.getValue() > max){
+                max = entry.getValue();
+                maxSong = entry.getKey();
+            }
+        }
         return UUID.randomUUID();
     }
 
@@ -61,7 +72,11 @@ public class ReportService {
      * @return A map of song IDs to the number of times they appear in the list.
      */
     public Map<UUID, Integer> getCountOfSongsByArtist(List<Song> songsByArtist) {
+        Map<UUID, Integer> songCounts = new HashMap<>();
+        for (Song song : songsByArtist)  {
+            songCounts.merge(song.getId(), 1, Integer::sum);
+        }
 
-        return new HashMap<>();
+        return songCounts;
     }
 }

@@ -1,5 +1,6 @@
 package com.javeriana.controllers;
 
+import com.javeriana.exceptions.WrongLogInException;
 import com.javeriana.models.Artist;
 import com.javeriana.models.Song;
 import com.javeriana.services.ArtistService;
@@ -56,9 +57,10 @@ public class ReportController {
      *
      * @return a map where the keys are the names of the artists and the values are the number of followers for each artist.
      */
-    public Map<String, Integer> showMostFollowedArtists() {
+    public Map<String, Integer> showMostFollowedArtists() throws WrongLogInException {
+        List<Artist> followedArtists = customerService.getAllFollowedArtists();
 
-       return new HashMap<>();
+        return reportService.getMostFollowedArtists(followedArtists);
     }
 
     /**
@@ -76,8 +78,15 @@ public class ReportController {
      * @return a string representing the details of the most added song in playlists.
      */
     public String showMostAddedSongInPlayList() {
-
-        return "";
+        List<Song> objectsInPlayList = playListService.getAllSongsInPlayLists();
+        Map<UUID, Integer> map = reportService.getCountOfSongsByArtist(objectsInPlayList);
+        Song mostSong = null;
+        for(int i = 1; i <= map.size(); i++){
+            if(map.get(i) > map.get(i-1)) {
+                mostSong = (Song) songService.searchSongById(String.valueOf(map.get(i)));
+            }
+        }
+        return String.valueOf(mostSong);
 
     }
 
@@ -102,7 +111,15 @@ public class ReportController {
      * @return a string representing the details of the most added song of a specific artist in playlists.
      */
     public String showMostAddedSongOfArtist(String artistId) {
+        List<Song> artistSongs = songService.searchSongsByArtistId(artistId);
+        Map<UUID, Integer> value = reportService.getCountOfSongsByArtist(artistSongs);
 
-        return "";
+        Song mostSong = null;
+        for(int i = 1; i <= value.size(); i++){
+            if(value.get(i) > value.get(i-1)) {
+                mostSong = (Song) songService.searchSongById(String.valueOf(value.get(i)));
+            }
+        }
+        return String.valueOf(mostSong);
     }
 }

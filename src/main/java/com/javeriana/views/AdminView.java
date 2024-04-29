@@ -3,6 +3,8 @@ package com.javeriana.views;
 import com.javeriana.controllers.AdminController;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
+import com.javeriana.models.PlayList;
+
 import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -139,7 +141,13 @@ public class AdminView {
      * 3. End Message: After the loop, the method prints a message to indicate the end of the playlist list.
      */
     private void showAllPlaylists() {
+        List<String> playlists = adminController.getAllPlaylists();
 
+        for (int i = 0; i < playlists.size(); i++) {
+            System.out.println(i + ") " + playlists.get(i));
+        }
+
+        System.out.println("Fin de la lista de PlayLists.");
     }
 
     /**
@@ -170,8 +178,13 @@ public class AdminView {
      * 3. End Message: After the loop, the method prints a message to indicate the end of the song list.
      */
     private void showAllSongs() {
+        List<String> songs = adminController.getAllSongs();
 
+        for (int i = 0; i < songs.size(); i++) {
+            System.out.println(i + ") " + songs.get(i));
+        }
 
+        System.out.println("Fin de la lista de canciones.");
     }
 
     /**
@@ -183,6 +196,13 @@ public class AdminView {
      * 3. End Message: After the loop, the method prints a message to indicate the end of the customer list.
      */
     private void showAllCustomers() {
+        List<String> customers = adminController.getAllCustomers();
+
+        for (int i = 0; i < customers.size(); i++) {
+            System.out.println(i + ") " + customers.get(i));
+        }
+
+        System.out.println("Fin de la lista de usuarios.");
 
     }
 
@@ -219,7 +239,7 @@ public class AdminView {
      * 3. Data Creation: The method calls the addCustomerToDatabase method of the adminController object, passing the customer details as parameters. This operation creates a new customer in the database.
      * 4. Confirmation Message: Finally, the method prints a message to the console to confirm that the customer has been created.
      */
-    private void addCustomerToDatabase() {
+    private void addCustomerToDatabase() throws AlreadyExistsException{
 
         System.out.println("Crear cliente.");
 
@@ -254,7 +274,7 @@ public class AdminView {
      * 4. Data Deletion: The method calls the deleteSongFromDatabase method of the adminController object, passing the songId as a parameter. This operation deletes the song from the database.
      * 5. Confirmation Message: Finally, the method prints a message to the console to confirm that the song has been deleted.
      */
-    private void deleteSongFromDatabase()  {
+    private void deleteSongFromDatabase() throws NotFoundException {
 
         System.out.println("Eliminar canción de la base de datos y las playlists en las que exista.");
         System.out.println("Estas son las canciones disponibles:");

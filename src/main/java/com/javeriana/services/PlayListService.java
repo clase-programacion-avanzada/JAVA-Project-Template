@@ -30,6 +30,9 @@ public class PlayListService {
         this.playLists = new ArrayList<>();
     }
 
+    //public static List<Song> getSongsFromArtist() {
+    //}
+
     /**
      * Returns a new list containing all playlists.
      *
@@ -53,6 +56,11 @@ public class PlayListService {
      * @throws IllegalArgumentException If the name is null or empty.
      */
     public PlayList addPlayList(String name) {
+        if (name == null || name.isEmpty()){
+            throw new IllegalArgumentException("El nombre es nulo o esta vacio");
+        }
+        PlayList newPlayList = new PlayList(name);
+        playLists.add(newPlayList);
 
         return PlayList.getUnknownPlayList(UUID.randomUUID().toString());
     }
@@ -67,7 +75,8 @@ public class PlayListService {
      * @param playLists The new list of playlists.
      */
     public void loadPlayLists(List<PlayList> playLists) {
-
+        this.playLists.clear();
+        this.playLists.addAll(playLists);
     }
 
     /**
@@ -107,10 +116,10 @@ public class PlayListService {
     public Map<String, PlayList> getPlayListsById() {
         return playLists.stream()
                 .collect(
-                    java.util.stream.Collectors.toMap(
-                        playList -> playList.getId().toString(),
-                        playList -> playList
-                    )
+                        java.util.stream.Collectors.toMap(
+                                playList -> playList.getId().toString(),
+                                playList -> playList
+                        )
                 );
     }
 
@@ -149,9 +158,16 @@ public class PlayListService {
      * @param playListsIds The IDs of the playlists to remove.
      */
     public void deletePlayLists(List<UUID> playListsIds) {
+        List<PlayList> playLists = new ArrayList<>();
 
+        for (UUID playListId : playListsIds) {
+            PlayList playList = getPlayListById(playListId.toString());
 
-
+            if (playList != null) {
+                playLists.add(playList);
+            }
+        }
+        playLists.forEach(this.playLists::remove);
     }
 
     /**
@@ -200,6 +216,10 @@ public class PlayListService {
      * @return A list of all songs in all playlists.
      */
     public List<Song> getAllSongsInPlayLists() {
+        List<Song> allSongs = new ArrayList<>();
+        for (PlayList playList : playLists){
+            allSongs.addAll(playList.getSongs());
+        }
         return new ArrayList<>();
     }
 }

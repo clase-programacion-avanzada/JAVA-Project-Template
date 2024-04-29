@@ -80,7 +80,7 @@ public class CustomerService {
      * and if it doesn't, it throws an `IllegalArgumentException`. Similarly, it checks if the provided password matches the `PASSWORD_PATTERN`, and if it doesn't, it throws an `IllegalArgumentException`.
      * It also checks if the provided age is less than `MINIMUM_AGE`, and if it is, it throws an `IllegalArgumentException`. It checks if the provided username is already taken, and if it is, it throws an `AlreadyExistsException`.
      * Then, it creates a new `Customer` object with the provided details and adds the new customer to the list of customers.
-     *
+     * <p>
      * Here's a breakdown of what each part of the method does:
      * 1. It takes in several parameters: the username, password, name, last name, and age of the customer.
      * 2. It checks if the provided name or last name is empty. If it is, it throws an `IllegalArgumentException`.
@@ -93,14 +93,30 @@ public class CustomerService {
      *
      * @param username The username of the new customer.
      * @param password The password of the new customer.
-     * @param name The name of the new customer.
+     * @param name     The name of the new customer.
      * @param lastName The last name of the new customer.
-     * @param age The age of the new customer.
+     * @param age      The age of the new customer.
      * @throws IllegalArgumentException If the name or last name is empty, the username does not match the USERNAME_PATTERN, the password does not match the PASSWORD_PATTERN, or the age is less than MINIMUM_AGE.
-     * @throws AlreadyExistsException If the username is already taken.
+     * @throws AlreadyExistsException   If the username is already taken.
      */
-    public void addCustomer(String username, String password, String name, String lastName, int age) {
-
+    public void addCustomer(String username, String password, String name, String lastName, int age) throws AlreadyExistsException {
+        if (name.isEmpty() || lastName.isEmpty()) {
+            throw new IllegalArgumentException("El nombre y el apellido no pueden estar vacios.");
+        }
+        if (!username.matches(USERNAME_PATTERN)) {
+            throw new IllegalArgumentException("Username invalido. Los usernames tienen que iniciar con una letra y deben contener letras y digitos. Debe tener entre 8 y 30 caracteres.");
+        }
+        if (!password.matches(PASSWORD_PATTERN)) {
+            throw new IllegalArgumentException("Contraseña inválida. Las contraseñas deben contener al menos una letra mayúscula, una letra minúscula, un dígito, un carácter especial y tener al menos 8 caracteres de longitud.");
+        }
+        if (age < MINIMUM_AGE) {
+            throw new IllegalArgumentException("Edad invalida. Debe ser minimo 14.");
+        }
+        if (customers.stream().anyMatch(customer -> customer.getUsername().equals(username))) {
+            throw new AlreadyExistsException("Username invalido.");
+        }
+        Customer customer = new Customer(username, password, name, lastName, age);
+        customers.add(customer);
 
     }
 
@@ -108,7 +124,7 @@ public class CustomerService {
      * This method is responsible for searching a customer by their username. It takes in a parameter: the username of the customer,
      * then iterates over the list of customers, and for each customer, it checks if the customer's username matches the provided username.
      * If it does, it returns the customer. If no customer is found with the provided username, it returns null.
-     *
+     * <p>
      * Here's a breakdown of what each part of the method does:
      * 1. It takes in a parameter: the username of the customer.
      * 2. It iterates over the list of customers.
@@ -132,7 +148,7 @@ public class CustomerService {
      * then calls the `searchCustomerByUsername` method to find the customer with the provided username. If the customer is not found, it returns false.
      * If the customer is found, it checks if the provided password matches the customer's password by calling the `checkPassword` method.
      * If the password is correct, it sets the `loggedCustomer` to the found customer. It returns true if the password is correct, false otherwise.
-     *
+     * <p>
      * Here's a breakdown of what each part of the method does:
      * 1. It takes in two parameters: the username and password of the customer.
      * 2. It calls the `searchCustomerByUsername` method to find the customer with the provided username.
@@ -155,7 +171,7 @@ public class CustomerService {
 
         boolean isPasswordCorrect = checkPassword(customer, password);
 
-        if(isPasswordCorrect) {
+        if (isPasswordCorrect) {
             this.loggedCustomer = customer;
         }
 
@@ -180,8 +196,7 @@ public class CustomerService {
      * @param customers The new list of customers.
      */
     public void loadCustomers(List<Customer> customers) {
-
-
+        this.customers = customers;
     }
 
 
@@ -199,7 +214,7 @@ public class CustomerService {
      * This method is responsible for adding a new playlist to the currently logged in customer. It takes in a parameter: the new playlist to be added.
      * It checks if there is a currently logged in customer. If there isn't, it throws a `WrongLogInException`.
      * If there is a logged in customer, it adds the new playlist to the customer's list of playlists.
-     *
+     * <p>
      * Here's a breakdown of what each part of the method does:
      * 1. It takes in a parameter: the new playlist to be added.
      * 2. It checks if there is a currently logged in customer. If there isn't, it throws a `WrongLogInException`.
@@ -208,17 +223,16 @@ public class CustomerService {
      * @param newPlayList The new playlist to add.
      * @throws WrongLogInException If no customer is currently logged in.
      */
-    public void addPlayListToLoggedCustomer(PlayList newPlayList) {
-
-
-
-
-
+    public void addPlayListToLoggedCustomer(PlayList newPlayList) throws WrongLogInException {
+        if (this.loggedCustomer == null) {
+            throw new WrongLogInException("No hay ningún cliente logeado.");
+        }
+        this.loggedCustomer.addPlayList(newPlayList);
     }
 
     /**
      * Retrieves the names of all playlists of the currently logged in customer.
-     *
+     * <p>
      * It first checks if a customer is currently logged in. If no customer is logged in, it throws a WrongLogInException.
      * If a customer is logged in, it retrieves the list of playlists of the logged in customer.
      * It then initializes an empty list of strings to store the names of the playlists.
@@ -229,14 +243,21 @@ public class CustomerService {
      * @throws WrongLogInException If no customer is currently logged in.
      */
     public List<String> getLoggedCustomerPlayLists() throws WrongLogInException {
-
+        if (this.loggedCustomer == null) {
+            throw new WrongLogInException("No hay ningún cliente conectado.");
+        }
+        List<PlayList> playLists = this.loggedCustomer.getPlayLists();
+        List<String> playListNames = new ArrayList<>();
+        for (PlayList playList : playLists) {
+            playListNames.add(playList.getName());
+        }
         return new ArrayList<>();
 
     }
 
     /**
      * Makes the currently logged in customer follow the given artist.
-     *
+     * <p>
      * It first checks if the currently logged in customer is already following the given artist by calling the `followArtist()` method on the `loggedCustomer` object.
      * The `followArtist()` method returns `true` if the artist is already being followed, and `false` otherwise. The result is negated (`!`) to get `true` if the artist is not being followed, and `false` if the artist is being followed. This result is stored in the `artistAlreadyExists` variable.
      * If `artistAlreadyExists` is `true`, which means the artist is already being followed by the customer, it throws an `AlreadyExistsException` with a message indicating that the artist is already being followed by the customer.
@@ -245,9 +266,11 @@ public class CustomerService {
      * @throws AlreadyExistsException If the artist is already being followed by the customer.
      */
     public void followArtist(Artist artist) throws AlreadyExistsException {
-
-
+        if (!this.loggedCustomer.followArtist(artist)) {
+            throw new AlreadyExistsException("El artista ya es seguido por el cliente");
+        }
     }
+
 
     /**
      * Returns a list of the names of all customers.
@@ -277,7 +300,10 @@ public class CustomerService {
      * @return A list of the IDs of all playlists of the customer with the given username, or an empty list if no such customer exists.
      */
     public List<UUID> getCustomerPlayListsIds(String username) {
-
+        Customer customer = searchCustomerByUsername(username);
+        if (customer == null) {
+            return new ArrayList<>();
+        }
         return new ArrayList<>();
     }
 
@@ -294,7 +320,7 @@ public class CustomerService {
         Customer customer = searchCustomerByUsername(username);
 
         if (customer == null) {
-            throw new IllegalArgumentException("The customer does not exist");
+            throw new IllegalArgumentException("El cliente no existe");
         }
 
         this.customers.remove(customer);
@@ -312,7 +338,14 @@ public class CustomerService {
      * @throws WrongLogInException If no customer is currently logged in.
      */
     public List<String> getFollowedArtistsByLoggedUser() throws WrongLogInException {
-
+        if (this.loggedCustomer == null) {
+            throw new WrongLogInException("No hay ningún cliente conectado.");
+        }
+        List<Artist> followedArtists = this.loggedCustomer.getFollowedArtists();
+        List<String> followedArtistsNames = new ArrayList<>();
+        for (Artist artist : followedArtists) {
+            followedArtistsNames.add(artist.toString());
+        }
         return new ArrayList<>();
     }
 
@@ -325,7 +358,12 @@ public class CustomerService {
      * @return A list of all artists followed by all customers.
      */
     public List<Artist> getAllFollowedArtists() {
-       return new ArrayList<>();
+        List<Artist> followedArtists = new ArrayList<>();
+        for (Customer customer : customers) {
+            List<Artist> customerFollowedArtists = customer.getFollowedArtists();
+            followedArtists.addAll(customerFollowedArtists);
+        }
+        return new ArrayList<>();
     }
 
     /**
@@ -334,5 +372,9 @@ public class CustomerService {
      */
     public void logOut() {
         this.loggedCustomer = null;
+    }
+
+    public List<Artist> getFollowedArtists() {
+        return null;
     }
 }
