@@ -189,7 +189,7 @@ public class SongService {
                 }
             }
         }
-        return new ArrayList<>();
+        return songsByArtist;
     }
 
 }

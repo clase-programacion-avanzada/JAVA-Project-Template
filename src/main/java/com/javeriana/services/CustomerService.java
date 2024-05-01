@@ -1,5 +1,7 @@
 package com.javeriana.services;
 
+import com.javeriana.controllers.AdminController;
+import com.javeriana.controllers.CustomerController;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.WrongLogInException;
 import com.javeriana.models.Artist;
@@ -251,7 +253,7 @@ public class CustomerService {
         for (PlayList playList : playLists) {
             playListNames.add(playList.getName());
         }
-        return new ArrayList<>();
+        return playListNames;
 
     }
 
@@ -304,6 +306,7 @@ public class CustomerService {
         if (customer == null) {
             return new ArrayList<>();
         }
+        
         return new ArrayList<>();
     }
 
@@ -346,7 +349,7 @@ public class CustomerService {
         for (Artist artist : followedArtists) {
             followedArtistsNames.add(artist.toString());
         }
-        return new ArrayList<>();
+        return followedArtistsNames;
     }
 
     /**
@@ -363,7 +366,7 @@ public class CustomerService {
             List<Artist> customerFollowedArtists = customer.getFollowedArtists();
             followedArtists.addAll(customerFollowedArtists);
         }
-        return new ArrayList<>();
+        return followedArtists;
     }
 
     /**

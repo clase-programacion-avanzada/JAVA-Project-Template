@@ -205,7 +205,7 @@ public class ArtistService {
             }
             foundArtists.add(artist);
         }
-        return new ArrayList<>();
+        return foundArtists;
     }
 
     /**

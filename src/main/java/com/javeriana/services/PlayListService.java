@@ -142,9 +142,9 @@ public class PlayListService {
         if (playList == null) {
             return false;
         }
+        playList.removeSong(songId);
 
-        return playList.removeSong(songId);
-
+        return true;
     }
 
     /**
@@ -220,6 +220,6 @@ public class PlayListService {
         for (PlayList playList : playLists){
             allSongs.addAll(playList.getSongs());
         }
-        return new ArrayList<>();
+        return allSongs;
     }
 }
