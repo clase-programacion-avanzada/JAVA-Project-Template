@@ -51,13 +51,13 @@ public class ReportService {
     public UUID maxSong(Map<UUID, Integer> mostAddedSongs) {
         UUID maxSong = null;
         for (Map.Entry<UUID, Integer> entry : mostAddedSongs.entrySet()){
-            Integer max = null;
+            Integer max = 0;
             if (entry.getValue() > max){
                 max = entry.getValue();
                 maxSong = entry.getKey();
             }
         }
-        return UUID.randomUUID();
+        return maxSong;
     }
 
     /**

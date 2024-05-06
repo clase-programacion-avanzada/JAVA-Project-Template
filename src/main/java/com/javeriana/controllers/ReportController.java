@@ -115,9 +115,12 @@ public class ReportController {
         Map<UUID, Integer> value = reportService.getCountOfSongsByArtist(artistSongs);
 
         Song mostSong = null;
-        for(int i = 1; i <= value.size(); i++){
-            if(value.get(i) > value.get(i-1)) {
-                mostSong = (Song) songService.searchSongById(String.valueOf(value.get(i)));
+        int maxCount = 0;
+
+        for (Map.Entry<UUID, Integer> entry : value.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCount = entry.getValue();
+                mostSong = songService.searchSongById(entry.getKey().toString());
             }
         }
         return String.valueOf(mostSong);

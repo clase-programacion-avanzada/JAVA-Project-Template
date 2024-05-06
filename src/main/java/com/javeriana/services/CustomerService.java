@@ -2,12 +2,14 @@ package com.javeriana.services;
 
 import com.javeriana.controllers.AdminController;
 import com.javeriana.controllers.CustomerController;
+import com.javeriana.controllers.ReportController;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.WrongLogInException;
 import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
 import com.javeriana.models.PlayList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -306,8 +308,7 @@ public class CustomerService {
         if (customer == null) {
             return new ArrayList<>();
         }
-        
-        return new ArrayList<>();
+        return Collections.singletonList(UUID.fromString(username));
     }
 
     /**
