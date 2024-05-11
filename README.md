@@ -32,7 +32,7 @@
         - [Funcionalidades del módulo de gestión de archivos](#funcionalidades-del-módulo-de-gestión-de-archivos)
         - [Funcionalidades del módulo de informes](#funcionalidades-del-módulo-de-informes)
     - [Reglas de negocio](#reglas-de-negocio)
-
+    - [Funcionalidades para la entrega final](#funcionalidades-para-la-entrega-final)
 # Proyecto Aplicación de Música 
 
 A continuación se presenta la documentación del proyecto de una aplicación de música. 
@@ -1013,5 +1013,109 @@ Nota: Puede encontrar un ejemplo del formato de los archivos CSV en la carpeta [
 - Se deben manejar todas las excepciones que puedan ocurrir durante la ejecución del programa.
 - Al agregar una canción a una lista de reproducción, se debe validar que la canción y la lista de reproducción existan en la base de datos.
 - Para asegurarse que el programa pueda crecer en el futuro se debe seguir la arquitectura propuesta en el documento.
+
+## Funcionalidades para la entrega final:
+
+### Modificaciones en el modelo:
+
+#### Clase Customer
+La clase customerse moverá a un paquete dentro del paquete `models`. Este paquete se llamará `customer`. La clase `Customer` será modificada y ahora será una clase abstracta. Los métodos que serán abstractos serán:
+- `public abstract void addPlayList(PlayList playList)`: Este método será responsable de agregar una lista de reproducción al cliente.
+- `protected abstract List<String> getPlayListIds()` : Este método será responsable de obtener los ids de las listas de reproducción del cliente como String.
+- `public abstract List<UUID> getPlayListsIds()`: Este método será responsable de obtener los ids de las listas de reproducción del cliente como UUID.
+- `public abstract List<PlayList> getPlayLists()`: Este método será responsable de obtener las listas de reproducción del cliente.
+
+Adicionalmente, se debe agregar los siguientes métodos de clase (static) para apoyar la creación de un cliente:
+
+- `public static Customer createCustomer(String type,
+  UUID id,
+  String username,
+  String password,
+  String name,
+  String lastName,
+  int age,
+  Set<Artist> followedArtists) throws UnsupportedTypeException`: Este método será responsable de crear un cliente de acuerdo al tipo de cliente que se desee crear, el parámetro `type` recibirá un String que puede ser `"Regular"` o `"Premium"`. Los tipos de cliente que se pueden crear son `RegularCustomer` y `PremiumCustomer`. Si el tipo de cliente no es ninguno de los anteriores se debe lanzar una excepción de tipo `UnsupportedTypeException`.
+- `public static Customer createCustomer(String type,
+  String username,
+  String password,
+  String name,
+  String lastName,
+  int age) throws UnsupportedTypeException`: Este método será responsable de crear un cliente de acuerdo al tipo de cliente que se desee crear, el parámetro `type` recibirá un String que puede ser `"Regular"` o `"Premium"`. Los tipos de cliente que se pueden crear son `RegularCustomer` y `PremiumCustomer`. Si el tipo de cliente no es ninguno de los anteriores se debe lanzar una excepción de tipo `UnsupportedTypeException`.
+
+**Nota: La excepción `UnsupportedTypeException` debe ser creada en el paquete `exceptions`.**
+
+#### Clase PremiumCustomer
+La clase `PremiumCustomer` será una subclase de `Customer` y estará dentro del paquete `customer`. Esta clase tendrá los siguientes atributos:
+
+- Una lista de `PlayList` llamada `playLists`.
+
+Esta clase debe tener dos constructores:
+
+- `public PremiumCustomer(UUID id, String username, String password, String name, String lastName, int age,
+  Set<Artist> followedArtists, List<PlayList> playLists)`: Este constructor creará un objeto `PremiumCustomer` con los atributos proporcionados. En este caso, la lista de reproducción y los artistas seguidos se inicializarán con los valores proporcionados.
+- `public PremiumCustomer(String username, String password, String name, String lastName, int age)`: Este constructor creará un objeto `PremiumCustomer` con los atributos proporcionados. En este caso, el Id se generará automáticamente y la lista de reproducción estará vacía.
+
+También debe implementar los métodos abstractos de la clase `Customer`. Las implementaciones de estos métodos deben cumplir las reglas de negocio que estaban definidas en la clase `Customer`.
+
+Finalmente, el método `toCSV` debe ser modificado, para que incluya la palabra `"Premium"` al inicio de la cadena que se retorna. El resto de la cadena debe ser igual a la que se retornaba anteriormente (acá debe llamar el método `toCSV` de la superclase).
+
+#### Clase RegularCustomer
+La clase `RegularCustomer` será una subclase de `Customer` y estará dentro del paquete `customer`. Esta clase tendrá los siguientes atributos:
+
+- Un objeto de tipo `PlayList` llamado `playList`.
+- Una constante de clase (`final static`) llamada `DEFAULT_PLAYLIST_NAME` cuyo valor será `"PlayListRegular"`.
+
+Esta clase debe tener dos constructores:
+
+- `public RegularCustomer(UUID id, String username, String password, String name, String lastName, int age,
+  Set<Artist> followedArtists, PlayList playList)`: Este constructor creará un objeto `RegularCustomer` con los atributos proporcionados. En este caso, el atributo `playlist` será asignado solamente con el primer elemento de la lista. Si la lista tiene más elementos, se debe lanzar una excepción de tipo `IllegalArgumentException` con el mensaje `"La lista de reproducción solo puede tener un elemento"`. Los demás atributos se inicializarán con los valores proporcionados.
+- `public RegularCustomer(String username, String password, String name, String lastName, int age)`: Este constructor creará un objeto `RegularCustomer` con los atributos proporcionados. En este caso, el Id se generará automáticamente y la lista de reproducción se inicializará con un objeto de tipo `PlayList` con el nombre `"PlayListRegular"` y un número aleatorio entre 0 y 1000.
+
+También debe implementar los métodos abstractos de la clase `Customer`. Las implementaciones de estos métodos deben cumplir las siguientes reglas de negocio:
+
+- Al agregar una lista de reproducción, se debe lanzar una excepción `UnsupportedOperationException` con el mensaje "Un usuario regular solo puede tener una playList".
+- Al retornar las listas de reproducción, se debe retornar una lista con un solo elemento, que es la lista de reproducción del usuario.
+- Al retornar los ids de las listas de reproducción, se debe retornar una lista con un solo elemento, que es el id de la lista de reproducción del usuario.
+
+Finalmente, el método `toCSV` debe ser modificado, para que incluya la palabra `"Regular"` al inicio de la cadena que se retorna. El resto de la cadena debe ser igual a la que se retornaba anteriormente (acá debe llamar el método `toCSV` de la superclase).
+
+#### Interfaz Playable:
+Se creará una interfaz llamada `Playable` en el paquete `models`. Esta interfaz tendrá un método abstracto llamado `play` que no recibirá parámetros y debe retornar un String.
+
+#### Clase Song:
+La clase `Song` implementará la interfaz `Playable`. El método `play` de la clase `Song` debe retornar un String con el siguiente formato: `"Reproduciendo canción: <nombre de la canción>"`.
+
+### Servicios
+
+#### Clase CustomerService
+
+La clase `CustomerService` debe incluir el siguiente nuevo método:
+
+- `public boolean isPlayListOwnedByLoggedCustomer(String playListId)`: Este método será responsable de verificar si la lista de reproducción con el id proporcionado pertenece al cliente que está logueado.
+
+#### Clase FileManagementService
+
+En la clase `FileManagementService` debe modificar el método encargado de importar los datos del archivo CSV de clientes para que pueda cargar el nuevo archivo de clientes [customers_2.csv](src/main/resources/customers_2.csv). Este archivo tiene un formato diferente al archivo original y contiene información adicional sobre los clientes. El método debe ser capaz de cargar los datos del nuevo archivo y crear los clientes correspondientes.
+Es probable que deba usar el método de clase `createCustomer` de la clase `Customer` para crear los clientes.
+
+### Controladores
+
+#### Clase AdminController
+La clase AdminController debe ser modificada para que el método `addCustomerToDatabase` reciba los parámetros necesarios para crear un cliente y el tipo de cliente que se desea crear. El método `addCustomerToDatabase` debe llamar al método `addCustomer` del servicio `customerService` con los parámetros proporcionados.
+
+#### Clase CustomerController
+La clase CustomerController debe ser modificada para incluir el siguiente método:
+
+- `public List<String> playPlayList(String playListId) throws WrongLogInException, NotFoundException` : Este método será responsable de reproducir una lista de reproducción dado su id. Si el cliente no está logueado, se debe lanzar una excepción de tipo `WrongLogInException`. Si la lista de reproducción no existe o si la lista no pertenece al usuario que está loggeado, se debe lanzar una excepción de tipo `NotFoundException`. El método debe retornar una lista de Strings con el resultado de llamar al método `play` de cada canción de la lista de reproducción a través del método `playSongs` dentro de la playList.
+
+### Vistas
+
+#### Clase AdminView
+
+En el método encargado de agregar un nuevo cliente, se debe permitir al usuario seleccionar el tipo de cliente que desea crear. El usuario debe poder seleccionar entre `"Regular"` y `"Premium"`. El método debe llamar al método `addCustomerToDatabase` del controlador `AdminController` con los parámetros proporcionados.
+
+#### Clase CustomerView
+
+En el método encargado de reproducir una lista de reproducción, se debe permitir al usuario seleccionar la lista de reproducción que desea reproducir. El método debe llamar al método `playPlayList` del controlador `CustomerController` con el id de la lista de reproducción seleccionada.
 
 [Volver al índice](#indice)

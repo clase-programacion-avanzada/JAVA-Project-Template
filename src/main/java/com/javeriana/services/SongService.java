@@ -123,7 +123,9 @@ public class SongService {
         Map<String, Song> songsById = new HashMap<>();
 
         for (Song song : songs) {
-            songsById.put(song.getId().toString(), song);
+            songsById.put(
+                    song.getId().toString(),
+                    song);
         }
 
         return songsById;
