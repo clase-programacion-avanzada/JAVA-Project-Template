@@ -101,6 +101,10 @@ public class FileManagementController {
         songService.loadSongs(songs);
         Map<String, Song> songsById = songService.getSongsById();
 
+        String playListsCSVFileName = playListsFileName + extension;
+        List<PlayList> playLists = fileManagementService.importPlayListsFromCSV(path, separator, playListsCSVFileName, songsById);
+        playListService.loadPlayLists(playLists);
+        Map<String, PlayList> playListsById = playListService.getPlayListsById();
 
 
 

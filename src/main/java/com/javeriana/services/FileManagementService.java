@@ -136,12 +136,12 @@ public class FileManagementService {
             // Loop through each artist ID
             for (String artistId : artistIds) {
                 // Add the artist to the list of artists for the song
-                artists.add(
-                    artistsById.getOrDefault(
-                        artistId,
-                        Artist.GetUnknownArtist(artistId)
-                    )
+                Artist artist = artistsById.getOrDefault(
+                    artistId,
+                    Artist.GetUnknownArtist(artistId)
                 );
+
+                artists.add(artist);
             }
 
             // Create a Song object with the data from the line
@@ -177,11 +177,14 @@ public class FileManagementService {
      * @return A list of PlayList objects.
      * @throws IOException If an I/O error occurs reading from the file.
      */
-    public List<PlayList> importPlayListsFromCSV(String path, String separator, String playListsFileName, Map<String, Song> songsById)
+    public List<PlayList> importPlayListsFromCSV(String path,
+                                                 String separator,
+                                                 String playListsFileName,
+                                                 Map<String, Song> songsById)
         throws IOException {
 
         //PlayList File has the following format:
-        //PlayListId,PlayListName,{SongId1,SongId2,SongId3,...}
+        //PlayListId;PlayListName;{SongId1,SongId2,SongId3,...}
 
         // Create a File object with the given path and filename
         File file = new File(path + playListsFileName);
@@ -192,8 +195,33 @@ public class FileManagementService {
         // Read all lines from the file
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 
-        // Loop through each line in the file
 
+        // Loop through each line in the file
+        for(String line : lines) {
+            String[] tokens = line.split(separator);
+
+            // Data format: [PlayListId,
+            // PlayListName,
+            // "{SongId1,SongId2,SongId3,...}"]
+            UUID id = UUID.fromString(tokens[0]);
+            String name = tokens[1];
+            // Extract the song IDs from the data
+            //This is a list of song ids
+            //["SongId1",SongId2,SongId3,...]
+            List<String> songIds = extractIds(tokens[2]);
+            List<Song> songs = new ArrayList<>();
+            for (String songId : songIds) {
+                // Add the song to the list of songs for the playlist
+                Song song = songsById.getOrDefault(
+                    songId,
+                    Song.getUnknownSong(songId)
+                );
+                songs.add(song);
+            }
+
+            PlayList playList = new PlayList(id, name, songs);
+            playLists.add(playList);
+        }
 
         // Return the list of playLists
         return playLists;
@@ -241,6 +269,7 @@ public class FileManagementService {
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 
         // Loop through each line in the file
+
 
         // Return the list of customers
         return customers;
