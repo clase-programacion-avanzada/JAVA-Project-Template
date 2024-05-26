@@ -47,7 +47,7 @@ public class RegularCustomer extends Customer {
     public List<UUID> getPlayListsIds() {
         return new ArrayList<>(List.of(playList.getId()));
     }
-    
+
     @Override
     public String toCSV(String separator) {
         return "Regular" + separator + super.toCSV(separator);

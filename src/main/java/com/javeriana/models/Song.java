@@ -29,7 +29,7 @@ import java.util.UUID;
  * The album is a String that represents the album of the song.
  */
 
-public class Song implements Serializable {
+public class Song implements Serializable, Playable {
 
     // region Attributes
     /**
@@ -198,6 +198,11 @@ public class Song implements Serializable {
             "Unknown Genre",
             0,
             "Unknown Album");
+    }
+
+    @Override
+    public String play() {
+        return "Reproduciendo canción: " + getName();
     }
 
     // endregion
