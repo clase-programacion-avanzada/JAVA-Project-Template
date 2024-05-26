@@ -124,6 +124,34 @@ public abstract class Customer implements Serializable {
         this.followedArtists = new HashSet<>();
         this.playLists = new ArrayList<>();
     }
+
+    public Customer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, Set<Artist> followedArtists1, List<PlayList> playLists) {
+        this.followedArtists = followedArtists1;
+        this.playLists = playLists;
+    }
+
+    public Customer(Set<Artist> followedArtists, List<PlayList> playLists) {
+        this.followedArtists = followedArtists;
+        this.playLists = playLists;
+    }
+
+    public Customer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.lastName = lastName;
+        this.age = age;
+        this.followedArtists = followedArtists;
+        this.playLists = new ArrayList<>();
+    }
+
+    public Customer() {
+        this.followedArtists = new HashSet<>();
+        this.playLists = new ArrayList<>();
+    }
+
+
     // endregion
 
     // region getters

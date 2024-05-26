@@ -1,0 +1,49 @@
+package com.javeriana.models;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+public class RegularCustomer extends Customer {
+
+    private PlayList playList;
+    public static final String DEFAULT_PLAYLIST_NAME = "PlayListRegular";
+
+    public RegularCustomer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, PlayList playList) {
+        super(id, username, password, name, lastName, age, followedArtists);
+        if (playList != null) {
+            this.playList = playList;
+        } else {
+            throw new IllegalArgumentException("La lista de reproducción no puede ser nula");
+        }
+    }
+
+    public RegularCustomer(String username, String password, String name, String lastName, int age) {
+        super(username, password, name, lastName, age);
+        this.playList = new PlayList(DEFAULT_PLAYLIST_NAME + (int) (Math.random() * 1000));
+    }
+
+    public RegularCustomer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) {
+        super();
+    }
+
+    @Override
+    public void addPlayList(PlayList playList) {
+
+    }
+
+    @Override
+    public List<PlayList> getPlayLists() {
+        return List.of();
+    }
+
+    @Override
+    protected List<String> getPlayListIds() {
+        return List.of();
+    }
+
+    @Override
+    public List<UUID> getPlayListsIds() {
+        return List.of();
+    }
+}
