@@ -94,7 +94,6 @@ public abstract class Customer implements Serializable {
      */
     public Customer(UUID id, String username, String password, String name, String lastName, int age,
                     Set<Artist> followedArtists, List<PlayList> playLists) {
-
         this.id = id;
         this.username = username;
         this.password = password;
@@ -123,16 +122,6 @@ public abstract class Customer implements Serializable {
         this.age = age;
         this.followedArtists = new HashSet<>();
         this.playLists = new ArrayList<>();
-    }
-
-    public Customer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, Set<Artist> followedArtists1, List<PlayList> playLists) {
-        this.followedArtists = followedArtists1;
-        this.playLists = playLists;
-    }
-
-    public Customer(Set<Artist> followedArtists, List<PlayList> playLists) {
-        this.followedArtists = followedArtists;
-        this.playLists = playLists;
     }
 
     public Customer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) {

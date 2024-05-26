@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.Set;
 
 public class PremiumCustomer extends Customer {
-    private final List<PlayList> playLists;
+    private List<PlayList> playLists;
 
     public PremiumCustomer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, List<PlayList> playLists) {
         super(id, username, password, name, lastName, age, followedArtists);
@@ -19,6 +19,10 @@ public class PremiumCustomer extends Customer {
     public PremiumCustomer(String username, String password, String name, String lastName, int age) {
         super(username, password, name, lastName, age);
         this.playLists = new ArrayList<>();
+    }
+
+    public PremiumCustomer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) {
+        super();
     }
 
     @Override
@@ -53,5 +57,4 @@ public class PremiumCustomer extends Customer {
     public String toCSV(String separator) {
         return "Premium" + separator + super.toCSV(separator);
     }
-
 }
