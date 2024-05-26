@@ -1,5 +1,6 @@
 package com.javeriana.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -29,21 +30,26 @@ public class RegularCustomer extends Customer {
 
     @Override
     public void addPlayList(PlayList playList) {
-
+        throw new UnsupportedOperationException("Un usuario regular solo puede tener una playList");
     }
 
     @Override
     public List<PlayList> getPlayLists() {
-        return List.of();
+        return new ArrayList<>(List.of(playList));
     }
 
     @Override
     protected List<String> getPlayListIds() {
-        return List.of();
+        return new ArrayList<>(List.of(playList.getId().toString()));
     }
 
     @Override
     public List<UUID> getPlayListsIds() {
-        return List.of();
+        return new ArrayList<>(List.of(playList.getId()));
+    }
+    
+    @Override
+    public String toCSV(String separator) {
+        return "Regular" + separator + super.toCSV(separator);
     }
 }
