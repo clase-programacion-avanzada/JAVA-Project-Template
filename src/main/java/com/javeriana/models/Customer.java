@@ -29,7 +29,7 @@ import java.util.UUID;
  * The followedArtists is a Set of Artist objects, representing the artists that the customer is following.
  * The playLists is a List of PlayList objects, representing the playlists that the customer has created.
  */
-public class Customer implements Serializable {
+public abstract class Customer implements Serializable {
 
     // region Attributes
     /**
@@ -150,9 +150,7 @@ public class Customer implements Serializable {
      *
      * @param playList The playlist to be added.
      */
-    public void addPlayList(PlayList playList) {
-        this.playLists.add(playList);
-    }
+    public abstract void addPlayList(PlayList playList);
 
     /**
      * Follows an artist by adding the artist to the customer's set of followed artists.
@@ -172,9 +170,7 @@ public class Customer implements Serializable {
     *
     * @return List of PlayList
     * */
-    public List<PlayList> getPlayLists() {
-        return new ArrayList<>(playLists);
-    }
+    public abstract List<PlayList> getPlayLists();
 
 
     /*
@@ -197,13 +193,7 @@ public class Customer implements Serializable {
     * @return List of playlists ids as String
     *
     * */
-    private List<String> getPlayListIds() {
-        List<String> playListIds = new ArrayList<>();
-        for (PlayList playList : playLists) {
-            playListIds.add(playList.getId().toString());
-        }
-        return playListIds;
-    }
+    protected abstract List<String> getPlayListIds();
 
 
     /**
@@ -211,13 +201,7 @@ public class Customer implements Serializable {
      *
      * @return A list of playlist IDs.
      */
-    public List<UUID> getPlayListsIds() {
-        List<UUID> playListsIds = new ArrayList<>();
-        for (PlayList playList : playLists) {
-            playListsIds.add(playList.getId());
-        }
-        return playListsIds;
-    }
+    public abstract List<UUID> getPlayListsIds();
 
     /**
      * Returns a list of string representations of the artists that the customer is following.

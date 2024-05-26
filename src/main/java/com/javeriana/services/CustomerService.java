@@ -119,7 +119,26 @@ public class CustomerService {
         if (customers.stream().anyMatch(customer -> customer.getUsername().equals(username))) {
             throw new AlreadyExistsException("Username invalido.");
         }
-        Customer customer = new Customer(username, password, name, lastName, age);
+        Customer customer = new Customer(username, password, name, lastName, age) {
+            @Override
+            public void addPlayList(PlayList playList) {
+            }
+
+            @Override
+            public List<PlayList> getPlayLists() {
+                return List.of();
+            }
+
+            @Override
+            protected List<String> getPlayListIds() {
+                return List.of();
+            }
+
+            @Override
+            public List<UUID> getPlayListsIds() {
+                return List.of();
+            }
+        };
         customers.add(customer);
 
     }
