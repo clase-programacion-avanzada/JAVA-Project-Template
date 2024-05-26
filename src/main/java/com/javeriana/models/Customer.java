@@ -1,5 +1,7 @@
 package com.javeriana.models;
 
+import com.javeriana.exceptions.UnsupportedTypeException;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -262,6 +264,26 @@ public abstract class Customer implements Serializable {
             + " - Artistas seguidos: " + followedArtists.size()
             + " - Playlists: " + playLists.size();
 
+    }
+
+    public static Customer createCustomer(String type, UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) throws UnsupportedTypeException {
+        if (type.equalsIgnoreCase("Regular")) {
+            return new RegularCustomer(id, username, password, name, lastName, age, followedArtists);
+        } else if (type.equalsIgnoreCase("Premium")) {
+            return new PremiumCustomer(id, username, password, name, lastName, age, followedArtists);
+        } else {
+            throw new UnsupportedTypeException("Tipo de cliente no soportado: " + type);
+        }
+    }
+
+    public static Customer createCustomer(String type, String username, String password, String name, String lastName, int age) throws UnsupportedTypeException {
+        if (type.equalsIgnoreCase("Regular")) {
+            return new RegularCustomer(username, password, name, lastName, age);
+        } else if (type.equalsIgnoreCase("Premium")) {
+            return new PremiumCustomer(username, password, name, lastName, age);
+        } else {
+            throw new UnsupportedTypeException("Tipo de cliente no soportado: " + type);
+        }
     }
 
     //endregion
