@@ -400,4 +400,11 @@ public class CustomerService {
     public List<Artist> getFollowedArtists() {
         return null;
     }
+
+    public boolean isPlayListOwnedByLoggedCustomer(String playListId){
+        List<UUID> uuidCustomer = getCustomerPlayListsIds(playListId);
+        return uuidCustomer.contains(loggedCustomer.getId());
+    }
+
+    //endregion
 }
