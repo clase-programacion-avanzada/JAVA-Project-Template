@@ -1,8 +1,5 @@
 package com.javeriana.services;
 
-import com.javeriana.controllers.AdminController;
-import com.javeriana.controllers.CustomerController;
-import com.javeriana.controllers.ReportController;
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.WrongLogInException;
 import com.javeriana.models.Artist;
@@ -95,15 +92,16 @@ public class CustomerService {
      * 7. It creates a new `Customer` object with the provided details.
      * 8. It adds the new customer to the list of customers.
      *
-     * @param username The username of the new customer.
-     * @param password The password of the new customer.
-     * @param name     The name of the new customer.
-     * @param lastName The last name of the new customer.
-     * @param age      The age of the new customer.
+     * @param username     The username of the new customer.
+     * @param password     The password of the new customer.
+     * @param name         The name of the new customer.
+     * @param lastName     The last name of the new customer.
+     * @param age          The age of the new customer.
+     * @param customerType
      * @throws IllegalArgumentException If the name or last name is empty, the username does not match the USERNAME_PATTERN, the password does not match the PASSWORD_PATTERN, or the age is less than MINIMUM_AGE.
      * @throws AlreadyExistsException   If the username is already taken.
      */
-    public void addCustomer(String username, String password, String name, String lastName, int age) throws AlreadyExistsException {
+    public void addCustomer(String username, String password, String name, String lastName, int age, String customerType) throws AlreadyExistsException {
         if (name.isEmpty() || lastName.isEmpty()) {
             throw new IllegalArgumentException("El nombre y el apellido no pueden estar vacios.");
         }

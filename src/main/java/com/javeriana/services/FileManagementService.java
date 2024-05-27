@@ -4,17 +4,16 @@ import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
 import com.javeriana.models.PlayList;
 import com.javeriana.models.Song;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The CustomerService class is part of a music application and is responsible for managing customers.
@@ -34,8 +33,7 @@ import java.util.UUID;
  * This class uses a list to store customers and a Customer object to keep track of the currently logged in customer.
  * It also uses several constants for validating usernames, passwords, and the minimum age for registration.
  */
-public class FileManagementService
-{
+public class FileManagementService {
 
     //region import from csv
 
@@ -57,34 +55,29 @@ public class FileManagementService
      * @return A list of Artist objects.
      * @throws IOException If an I/O error occurs reading from the file or a malformed or unmappable byte sequence is read.
      */
-    public List<Artist> importArtistsFromCSV(String path, String separator,String artistsFileName) throws IOException
-    {
+    public List<Artist> importArtistsFromCSV(String path, String separator,String artistsFileName) throws IOException {
 
         // Create a File object with the given path and filename
         File file = new File(path + artistsFileName);
 
         // Read all lines from the file
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-
         // Create a list to store the artists
         List<Artist> artists = new ArrayList<>();
-
         // Loop through each line in the file
         for (String line : lines) {
             // Split the line into an array using the separator
             Artist artist = Artist.fromCSV(line, separator);
-
             // Add the artist to the list
             artists.add(artist);
         }
-
         // Return the list of artists
         return artists;
     }
 
     /**
      * Imports a list of songs from a CSV file.
-
+     *
      * The method does the following:
      * 1. Creates a File object using the provided path and filename.
      * 2. Reads all lines from the file into a list of strings.
@@ -134,12 +127,12 @@ public class FileManagementService
             // Loop through each artist ID
             for (String artistId : artistIds) {
                 // Add the artist to the list of artists for the song
-                Artist artist = artistsById.getOrDefault(
-                        artistId,
-                        Artist.GetUnknownArtist(artistId)
+                artists.add(
+                        artistsById.getOrDefault(
+                                artistId,
+                                Artist.GetUnknownArtist(artistId)
+                        )
                 );
-
-                artists.add(artist);
             }
 
             // Create a Song object with the data from the line
@@ -175,52 +168,32 @@ public class FileManagementService
      * @return A list of PlayList objects.
      * @throws IOException If an I/O error occurs reading from the file.
      */
-    public List<PlayList> importPlayListsFromCSV(String path,
-                                                 String separator,
-                                                 String playListsFileName,
-                                                 Map<String, Song> songsById)
+    public List<PlayList> importPlayListsFromCSV(String path, String separator, String playListsFileName, Map<String, Song> songsById)
             throws IOException {
 
-        //PlayList File has the following format:
-        //PlayListId;PlayListName;{SongId1,SongId2,SongId3,...}
-
-        // Create a File object with the given path and filename
         File file = new File(path + playListsFileName);
-
-        // Create a list to store the playLists
-        List<PlayList> playLists = new ArrayList<>();
 
         // Read all lines from the file
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+        List<PlayList> playLists = new ArrayList<>();
 
-        // Loop through each line in the file
         for(String line : lines) {
-            String[] tokens = line.split(separator);
+            String[] data = line.split(separator);
+            UUID id = UUID.fromString(data[0]);
+            String name = data[1];
 
-            // Data format: [PlayListId,
-            // PlayListName,
-            // "{SongId1,SongId2,SongId3,...}"]
-            UUID id = UUID.fromString(tokens[0]);
-            String name = tokens[1];
-            // Extract the song IDs from the data
-            //This is a list of song ids
-            //["SongId1",SongId2,SongId3,...]
-            List<String> songIds = extractIds(tokens[2]);
+            List<String> songIds = extractIds(data[2]);
             List<Song> songs = new ArrayList<>();
-            for (String songId : songIds) {
-                // Add the song to the list of songs for the playlist
-                Song song = songsById.getOrDefault(
-                        songId,
-                        Song.getUnknownSong(songId)
-                );
-                songs.add(song);
+
+            for(String songId : songIds) {
+                songs.add(songsById.getOrDefault(songId, Song.getUnknownSong(songId)));
             }
 
-            PlayList playList = new PlayList(id, name, songs);
-            playLists.add(playList);
+            PlayList playlist = new PlayList(id, name, songs);
+            playLists.add(playlist);
         }
 
-        // Return the list of playLists
+
         return playLists;
     }
 
@@ -265,19 +238,51 @@ public class FileManagementService
         // Read all lines from the file
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
 
-        // Loop through each line in the file
-        for (String line : lines){
+        for(String line : lines) {
             String[] data = line.split(separator);
             UUID id = UUID.fromString(data[0]);
             String username = data[1];
             String password = data[2];
             String name = data[3];
-            String lastName = data[4];
+            String lastname = data[4];
             int age = Integer.parseInt(data[5]);
-            Set<Artist> artists = new HashSet<>();
-            List<PlayList> playLists = new ArrayList<>();
 
+            List<String> artistIds = extractIds(data[6]);
+            Set<Artist> artists = new HashSet<>();
+            for(String artistId : artistIds) {
+                Artist artist = artistsById.getOrDefault(artistId, Artist.GetUnknownArtist(artistId));
+                artists.add(artist);
+            }
+
+            List<PlayList> playLists = new ArrayList<>();
+            List<String> playListIds = extractIds(data[7]);
+            for(String playListId : playListIds) {
+                PlayList playList = playListById.getOrDefault(playListId, PlayList.getUnknownPlayList(playListId));
+                playLists.add(playList);
+            }
+            customers.add(new Customer(id, username, password, name, lastname, age, artists, playLists) {
+                @Override
+                public void addPlayList(PlayList playList) {
+
+                }
+
+                @Override
+                public List<PlayList> getPlayLists() {
+                    return List.of();
+                }
+
+                @Override
+                protected List<String> getPlayListIds() {
+                    return List.of();
+                }
+
+                @Override
+                public List<UUID> getPlayListsIds() {
+                    return List.of();
+                }
+            });
         }
+
         // Return the list of customers
         return customers;
 
@@ -435,7 +440,7 @@ public class FileManagementService
         List<String> linesToWrite = new ArrayList<>();
 
         // Loop through each customer
-        for (Customer customer : customers){
+        for(Customer customer : customers) {
             linesToWrite.add(customer.toCSV(separator));
         }
 
@@ -508,12 +513,10 @@ public class FileManagementService
      * @throws IOException If an I/O error occurs reading from the file.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public List<Artist> importArtistsFromBinary(String path, String artistsFileName) throws IOException, ClassNotFoundException //YA
-    {
+    public List<Artist> importArtistsFromBinary(String path, String artistsFileName) throws IOException, ClassNotFoundException {
         // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
         try (FileInputStream fileInputStream = new FileInputStream(path + artistsFileName);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream))
-        {
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             return (List<Artist>) objectInputStream.readObject();
         }
     }
@@ -540,21 +543,12 @@ public class FileManagementService
      * @throws IOException If an I/O error occurs reading from the file.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public List<Song> importSongsFromBinary(String path, String songsFileName) throws IOException, ClassNotFoundException //YA
-    {
+    public List<Song> importSongsFromBinary(String path, String songsFileName) throws IOException, ClassNotFoundException {
         // Read the list of songs from the file
-        List<Song> songs = new ArrayList<>();
-        // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
-        try(FileInputStream fileInputStream = new FileInputStream(path + songsFileName);
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream))
-        {
-            while (objectInputStream.available() > 0)
-            {
-                Song songFromFile = (Song) objectInputStream.readObject();
-                songs.add(songFromFile);
-            }
+        try (FileInputStream fileInputStream = new FileInputStream(path + songsFileName);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            return (List<Song>) objectInputStream.readObject();
         }
-        return songs;
     }
 
     /**
@@ -579,15 +573,13 @@ public class FileManagementService
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
     public List<PlayList> importPlayListsFromBinary(String path, String playListsFileName) throws IOException, ClassNotFoundException {
-        // Try-with-resources automatically closes resources
-        try (FileInputStream fis = new FileInputStream(path + "/" + playListsFileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
+        // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
 
-            // Cast the read object to a List of PlayList objects
-            List<PlayList> playlists = (List<PlayList>) ois.readObject();
+        List<PlayList> playLists = new ArrayList<>();
 
-            // Return the list of playlists
-            return playlists;
+        try (FileInputStream fileInputStream = new FileInputStream(path + playListsFileName);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            return (List<PlayList>) objectInputStream.readObject();
         }
     }
 
@@ -613,18 +605,15 @@ public class FileManagementService
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
     public List<Customer> importCustomersFromBinary(String path, String customersFileName) throws IOException, ClassNotFoundException {
-        // Try-with-resources automatically closes resources
-        try (FileInputStream fis = new FileInputStream(path + "/" + customersFileName);
-             ObjectInputStream ois = new ObjectInputStream(fis)) {
+        List<Customer> customers = new ArrayList<>();
+        // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
 
-            // Cast the read object to a List of Customer objects
-            List<Customer> customers = (List<Customer>) ois.readObject();
-
-            // Return the list of customers
-            return customers;
+        try (FileInputStream fileInputStream = new FileInputStream(path + customersFileName);
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            return (List<Customer>) objectInputStream.readObject();
         }
-    }
 
+    }
 
     /**
      * Imports a list of objects from a binary file.
@@ -657,19 +646,8 @@ public class FileManagementService
      * @throws IOException If an I/O error occurs reading from the file.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
-    public <T> List<T> importObjectsFromBinary(String path, String fileName) throws IOException, ClassNotFoundException //YA
-    {
-        List<T> objects = new ArrayList<>();
+    public <T> List<T> importObjectsFromBinary(String path, String fileName) throws IOException, ClassNotFoundException {
         // We use try-with-resources to automatically close the FileInputStream and ObjectInputStream
-        try (FileInputStream fileInputStream = new FileInputStream(path + fileName);
-             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream))
-        {
-            while (objectInputStream.available() > 0)
-            {
-                T objectFromFile = (T) objectInputStream.readObject();
-                objects.add(objectFromFile);
-            }
-        }
         return new ArrayList<>();
     }
 
@@ -691,15 +669,12 @@ public class FileManagementService
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportArtistsToBinary(String defaultPath, String defaultArtistsFileName, List<Artist> artists) throws IOException {
-        // Try-with-resources to automatically close resources
+        // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
         try (FileOutputStream fileOutputStream = new FileOutputStream(defaultPath + defaultArtistsFileName);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
-
-            // Use the actual objectOutputStream to write the artists
             objectOutputStream.writeObject(artists);
         }
     }
-
 
     /**
      * Exports a list of songs to a binary file.
@@ -714,16 +689,11 @@ public class FileManagementService
      * @param songs The list of Song objects to export.
      * @throws IOException If an I/O error occurs writing to the file.
      */
-    public void exportSongsToBinary(String path, String songsFileName, List<Song> songs) throws IOException
-    { //YA
+    public void exportSongsToBinary(String path, String songsFileName, List<Song> songs) throws IOException {
         // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
         try (FileOutputStream fileOutputStream = new FileOutputStream(path + songsFileName);
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream))
-        {
-            for (Song song : songs)
-            {
-                objectOutputStream.writeObject(song);
-            }
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(songs);
         }
     }
 
@@ -737,16 +707,14 @@ public class FileManagementService
      *
      * @param path The path to the binary file.
      * @param playListsFileName The name of the binary file.
-     * @param playlists The list of PlayList objects to export.
+     * @param playLists The list of PlayList objects to export.
      * @throws IOException If an I/O error occurs writing to the file.
      */
-    public void exportPlaylistsToBinary(String path, String playListsFileName, List<PlayList> playlists) throws IOException {
-        // Try-with-resources automatically closes resources
-        try (FileOutputStream fos = new FileOutputStream(path + "/" + playListsFileName);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
-            // Write the list of playlists to the file
-            oos.writeObject(playlists);
+    public void exportPlayListsToBinary(String path, String playListsFileName, List<PlayList> playLists) throws IOException {
+        // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
+        try(FileOutputStream fileOutputStream = new FileOutputStream(path + playListsFileName);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(playLists);
         }
     }
 
@@ -765,18 +733,12 @@ public class FileManagementService
      * @throws IOException If an I/O error occurs writing to the file.
      */
     public void exportCustomersToBinary(String path, String customersFileName, List<Customer> customers) throws IOException {
-        // Try-with-resources automatically closes resources
-        try (FileOutputStream fos = new FileOutputStream(path + "/" + customersFileName);
-             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-
-            // Write the list of customers to the file
-            oos.writeObject(customers);
+        // We use try-with-resources to automatically close the FileOutputStream and ObjectOutputStream
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path + customersFileName);
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(customers);
         }
     }
-
-    public void exportPlayListsToBinary(String path, String playListsSpotifyFileName, List<PlayList> playLists) {
-    }
-
     //endregion
 
 }

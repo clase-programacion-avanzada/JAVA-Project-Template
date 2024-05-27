@@ -29,12 +29,13 @@ public class ReportService {
      * @return A map of artist names to the number of times they are followed.
      */
     public Map<String, Integer> getMostFollowedArtists(List<Artist> followedArtists) {
-        Map<String, Integer> artistCounts = new HashMap<>();
-        for (Artist artist : followedArtists)  {
-            artistCounts.merge(artist.getName(), 1, Integer::sum);
-        }
 
-        return artistCounts;
+        Map<String, Integer> artistMap = new HashMap<>();
+        for(Artist artist : followedArtists) {
+            String artistName = artist.getName();
+            artistMap.merge(artistName, 1, Integer::sum);
+        }
+        return artistMap;
     }
 
     /**
@@ -49,12 +50,17 @@ public class ReportService {
      * @return The ID of the song with the maximum count.
      */
     public UUID maxSong(Map<UUID, Integer> mostAddedSongs) {
+
         UUID maxSong = null;
-        for (Map.Entry<UUID, Integer> entry : mostAddedSongs.entrySet()){
-            Integer max = 0;
-            if (entry.getValue() > max){
-                max = entry.getValue();
-                maxSong = entry.getKey();
+        int max = 0;
+
+        for (Map.Entry<UUID, Integer> entry : mostAddedSongs.entrySet()) {
+            UUID songId = entry.getKey();
+            int count = entry.getValue();
+
+            if (count > max) {
+                max = count;
+                maxSong = songId;
             }
         }
         return maxSong;
@@ -72,11 +78,19 @@ public class ReportService {
      * @return A map of song IDs to the number of times they appear in the list.
      */
     public Map<UUID, Integer> getCountOfSongsByArtist(List<Song> songsByArtist) {
-        Map<UUID, Integer> songCounts = new HashMap<>();
-        for (Song song : songsByArtist)  {
-            songCounts.merge(song.getId(), 1, Integer::sum);
+
+        Map<UUID, Integer> songCountMap = new HashMap<>();
+
+        for (Song song : songsByArtist) {
+            UUID songId = song.getId();
+
+            if (songCountMap.containsKey(songId)) {
+                songCountMap.put(songId, songCountMap.get(songId) + 1);
+            } else {
+                songCountMap.put(songId, 1);
+            }
         }
 
-        return songCounts;
+        return songCountMap;
     }
 }

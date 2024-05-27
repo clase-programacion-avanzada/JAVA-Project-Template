@@ -132,12 +132,12 @@ public class AdminController {
      * @param age the age of the customer.
      * @throws AlreadyExistsException if a customer with the same username already exists in the database.
      */
-    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age) throws AlreadyExistsException {
+    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age, String customerType) throws AlreadyExistsException {
         Customer customerUsername = customerService.searchCustomerByUsername(username);
         if (customerUsername != null) {
             throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
         }
-        customerService.addCustomer(username, password, name, lastName, age);
+        customerService.addCustomer(username, password, name, lastName, age, customerType);
     }
 
     /**
