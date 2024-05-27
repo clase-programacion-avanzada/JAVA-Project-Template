@@ -2,9 +2,7 @@ package com.javeriana.controllers;
 
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
-import com.javeriana.models.Artist;
-import com.javeriana.models.Customer;
-import com.javeriana.models.Song;
+import com.javeriana.models.*;
 import com.javeriana.services.ArtistService;
 import com.javeriana.services.CustomerService;
 import com.javeriana.services.PlayListService;
@@ -137,7 +135,18 @@ public class AdminController {
         if (customerUsername != null) {
             throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
         }
-        customerService.addCustomer(username, password, name, lastName, age);
+
+        // Crear un objeto Customer según el tipo de cliente que se desea crear
+        Customer customer;
+        if (customerTypeString.equals("Premium")) {
+            customer = new PremiumCustomer(username, password, name, lastName, age);
+        } else if (customerTypeString.equals("Regular")) {
+            customer = new RegularCustomer(username, password, name, lastName, age);
+        } else {
+            throw new IllegalArgumentException("Tipo de cliente no válido");
+        }
+
+        customerService.addCustomer(customer);
     }
 
     /**

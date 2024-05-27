@@ -408,5 +408,8 @@ public class CustomerService {
         return uuidCustomer.contains(loggedCustomer.getId());
     }
 
+    public void addCustomer(Customer customer) {
+    }
+
     //endregion
 }
