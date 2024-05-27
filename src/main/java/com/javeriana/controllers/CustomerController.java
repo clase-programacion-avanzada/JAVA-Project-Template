@@ -279,7 +279,11 @@ public class CustomerController {
             throw new NotFoundException("La lista de reproducción no pertenece al cliente logueado.");
         }
 
-        return "que monda retorno";
-    }
+        List<String> result = new ArrayList<>();
+        for (Song song : playList.getSongs()) {
+            result.add(song.play());
+        }
+        return result;
+}
 
 }
