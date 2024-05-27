@@ -40,41 +40,30 @@ public class CustomerView {
     }
 
     public void showView() throws WrongLogInException {
+        boolean customerLoggedIn = logIn();
 
-        boolean customerLogged = logIn();
-
-        if (!customerLogged) {
+        if (!customerLoggedIn) {
             throw new WrongLogInException("Usuario o contraseña incorrectos.");
         }
 
         int option = 0;
 
         do {
-
             printMenu();
 
-            try{
+            try {
                 option = Integer.parseInt(scanner.nextLine());
 
                 switch (option) {
                     case 1 -> addNewPlayList();
-
                     case 2 -> showMyPlayLists();
-
                     case 3 -> addNewSongToPlayList();
-
                     case 4 -> deleteSongFromPlayList();
-
                     case 5 -> seeAllSongsFromPlayList();
-
                     case 6 -> followArtist();
-
                     case 7 -> seeFollowedArtists();
-
-                    case 8 -> playPlayList(); // Nuevo caso para reproducir lista de reproducción
-
+                    case 8 -> playPlayList();
                     case 0 -> System.out.println("Volviendo al menú principal.");
-
                     default -> System.out.println("Opción no válida.");
                 }
             } catch (InputMismatchException | NumberFormatException e) {
@@ -86,7 +75,6 @@ public class CustomerView {
         } while (option != 0);
 
         customerController.logOut();
-
     }
 
     private void playPlayList() throws WrongLogInException, NotFoundException {
@@ -253,10 +241,30 @@ public class CustomerView {
         System.out.println("Iniciar sesión");
         System.out.println("Ingrese su nombre de usuario:");
         String username = scanner.nextLine();
+
+        // Validate that the username is not empty or null
+        if (username == null || username.isEmpty()) {
+            System.out.println("El nombre de usuario no puede estar vacío.");
+            return false;
+        }
+
         System.out.println("Ingrese su contraseña:");
         String password = scanner.nextLine();
 
-        return customerController.logIn(username, password);
+        // Validate that the password is not empty or null
+        if (password == null || password.isEmpty()) {
+            System.out.println("La contraseña no puede estar vacía.");
+            return false;
+        }
+
+        try {
+            // Attempt to authenticate the user
+            return customerController.logIn(username, password);
+        } catch (Exception e) {
+            // Handle any exceptions that occur during authentication
+            System.out.println("Error al iniciar sesión: " + e.getMessage());
+            return false;
+}
     }
 
 

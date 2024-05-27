@@ -75,12 +75,15 @@ public class ReportController {
      * @return a string representing the details of the most added song in playlists.
      */
     public String showMostAddedSongInPlayList() {
+        // Use an instance of PlayListService to call the method
         List<Song> songs = PlayListService.getAllSongsInPlayLists();
-        Map<UUID, Integer> maps = ReportService.getCountOfSongsByArtist(songs);
+
+        // Pass the list of songs instead of a list of UUIDs
+        Map<UUID, Integer> songsCount = reportService.getCountOfSongsByArtist(songs);
 
         UUID mostAddedSongId = null;
         int maxCount = 0;
-        for (Map.Entry<UUID, Integer> entry : maps.entrySet()) {
+        for (Map.Entry<UUID, Integer> entry : songsCount.entrySet()) {
             if (entry.getValue() > maxCount) {
                 mostAddedSongId = entry.getKey();
                 maxCount = entry.getValue();

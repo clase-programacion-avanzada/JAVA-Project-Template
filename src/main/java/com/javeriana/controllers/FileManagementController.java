@@ -91,25 +91,28 @@ public class FileManagementController {
                                String customersFileName)
             throws IOException {
 
-        String artistsCSVFileName = artistsFileName + extension;
-        List<Artist> artists = fileManagementService.importArtistsFromCSV(path, separator ,artistsCSVFileName);
-        artistService.loadArtists(artists);
-        Map<String, Artist> artistsById = artistService.getMapOfArtistsById();
+        try {
+            String artistsCSVFileName = artistsFileName + extension;
+            List<Artist> artists = fileManagementService.importArtistsFromCSV(path, separator, artistsCSVFileName);
+            artistService.loadArtists(artists);
+            Map<String, Artist> artistsById = artistService.getMapOfArtistsById();
 
-        String songsCSVFileName = songsFileName + extension;
-        List<Song> songs = fileManagementService.importSongsFromCSV(path, separator, songsCSVFileName, artistsById);
-        songService.loadSongs(songs);
-        Map<String, Song> songsById = songService.getSongsById();
+            String songsCSVFileName = songsFileName + extension;
+            List<Song> songs = fileManagementService.importSongsFromCSV(path, separator, songsCSVFileName, artistsById);
+            songService.loadSongs(songs);
+            Map<String, Song> songsById = songService.getSongsById();
 
-        String playListsCSVFileName = playListsFileName + extension;
-        List<PlayList> playLists = fileManagementService.importPlayListsFromCSV(path, separator, playListsCSVFileName, songsById);
-        playListService.loadPlayLists(playLists);
-        Map<String, PlayList> playListById = playListService.getPlayListsById();
+            String playListsCSVFileName = playListsFileName + extension;
+            List<PlayList> playLists = fileManagementService.importPlayListsFromCSV(path, separator, playListsCSVFileName, songsById);
+            playListService.loadPlayLists(playLists);
+            Map<String, PlayList> playListById = playListService.getPlayListsById();
 
-        String customersCSVFileName = customersFileName + extension;
-        List<Customer> customers = fileManagementService.importCustomersFromCSV(path, separator, customersCSVFileName, artistsById, playListById);
-        customerService.loadCustomers(customers);
-        Map<String, Customer> customerById = (Map<String, Customer>) customerService.getCustomers();
+            String customersCSVFileName = customersFileName + extension;
+            List<Customer> customers = fileManagementService.importCustomersFromCSV(path, separator, customersCSVFileName, artistsById, playListById);
+            customerService.loadCustomers(customers);
+        } catch (IOException e) {
+            throw new IOException("Error al importar archivos CSV",e);
+}
     }
 
     /**
