@@ -71,6 +71,8 @@ public class CustomerView {
 
                     case 7 -> seeFollowedArtists();
 
+                    case 8 -> playPlayList(); // Nuevo caso para reproducir lista de reproducción
+
                     case 0 -> System.out.println("Volviendo al menú principal.");
 
                     default -> System.out.println("Opción no válida.");
@@ -85,6 +87,14 @@ public class CustomerView {
 
         customerController.logOut();
 
+    }
+
+    private void playPlayList() throws WrongLogInException, NotFoundException {
+        System.out.println("Reproducir lista de reproducción.");
+        showMyPlayLists();
+        System.out.println("Ingrese el id de la lista de reproducción que desea reproducir:");
+        String playListId = scanner.nextLine();
+        customerController.playPlayList(playListId);
     }
 
     private void seeFollowedArtists() throws WrongLogInException {
@@ -152,11 +162,11 @@ public class CustomerView {
 
     private void showSongsInPlayList(String playListId) throws NotFoundException {
 
-            List<String> songsFromPlayList = customerController.getAllSongsFromPlayList(playListId);
+        List<String> songsFromPlayList = customerController.getAllSongsFromPlayList(playListId);
 
-            for (int i = 0; i < songsFromPlayList.size(); i++) {
-                System.out.println(i + ") " + songsFromPlayList.get(i));
-            }
+        for (int i = 0; i < songsFromPlayList.size(); i++) {
+            System.out.println(i + ") " + songsFromPlayList.get(i));
+        }
     }
 
     private void addNewSongToPlayList() throws WrongLogInException, NotFoundException {

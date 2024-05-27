@@ -264,4 +264,22 @@ public class CustomerController {
     public void logOut() {
         customerService.logOut();
     }
+
+    public List<String> playPlayList(String playListId) throws WrongLogInException, NotFoundException {
+        if (!customerService.isCustomerLogged()) {
+            throw new WrongLogInException("No hay un cliente logueado.");
+        }
+
+        PlayList playList = playListService.getPlayListById(playListId);
+        if (playList == null) {
+            throw new NotFoundException("La lista de reproducción no existe.");
+        }
+
+        if (!customerService.isPlayListOwnedByLoggedCustomer(playListId)) {
+            throw new NotFoundException("La lista de reproducción no pertenece al cliente logueado.");
+        }
+
+        return "que monda retorno";
+    }
+
 }

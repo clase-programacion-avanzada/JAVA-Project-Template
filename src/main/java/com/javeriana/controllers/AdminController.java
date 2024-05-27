@@ -4,7 +4,6 @@ import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
 import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
-import com.javeriana.models.PlayList;
 import com.javeriana.models.Song;
 import com.javeriana.services.ArtistService;
 import com.javeriana.services.CustomerService;
@@ -116,28 +115,29 @@ public class AdminController {
     /**
      * The addCustomerToDatabase method is responsible for adding a new customer to the database.
      * It uses the CustomerService to perform this operation.
-     *
+     * <p>
      * The method takes five parameters: username, password, name, lastName, and age.
      * These parameters represent the username, password, name, last name, and age of the customer respectively.
-     *
+     * <p>
      * The method calls the addCustomer method of the CustomerService instance, passing the username, password, name, lastName, and age as parameters.
      * This operation adds a new customer to the database.
-     *
+     * <p>
      * The method throws an AlreadyExistsException if a customer with the same username already exists in the database.
      *
-     * @param username the username of the customer.
-     * @param password the password of the customer.
-     * @param name the name of the customer.
-     * @param lastName the last name of the customer.
-     * @param age the age of the customer.
+     * @param username           the username of the customer.
+     * @param password           the password of the customer.
+     * @param name               the name of the customer.
+     * @param lastName           the last name of the customer.
+     * @param age                the age of the customer.
+     * @param customerTypeString
      * @throws AlreadyExistsException if a customer with the same username already exists in the database.
      */
-    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age, String customerType) throws AlreadyExistsException {
+    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age, String customerTypeString) throws AlreadyExistsException {
         Customer customerUsername = customerService.searchCustomerByUsername(username);
         if (customerUsername != null) {
             throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
         }
-        customerService.addCustomer(username, password, name, lastName, age, customerType);
+        customerService.addCustomer(username, password, name, lastName, age);
     }
 
     /**

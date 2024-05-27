@@ -239,8 +239,7 @@ public class AdminView {
      * 3. Data Creation: The method calls the addCustomerToDatabase method of the adminController object, passing the customer details as parameters. This operation creates a new customer in the database.
      * 4. Confirmation Message: Finally, the method prints a message to the console to confirm that the customer has been created.
      */
-    private void addCustomerToDatabase() throws AlreadyExistsException{
-
+    private void addCustomerToDatabase() throws AlreadyExistsException {
         System.out.println("Crear cliente.");
 
         System.out.println("Ingrese el nombre del cliente:");
@@ -258,10 +257,24 @@ public class AdminView {
         System.out.println("Ingrese la edad del cliente:");
         int age = Integer.parseInt(scanner.nextLine());
 
-        adminController.addCustomerToDatabase(username, password, name, lastName, age);
+        System.out.println("Seleccione el tipo de cliente:");
+        System.out.println("1. Regular");
+        System.out.println("2. Premium");
+        int customerType = Integer.parseInt(scanner.nextLine());
+
+        String customerTypeString;
+        if (customerType == 1) {
+            customerTypeString = "Regular";
+        } else if (customerType == 2) {
+            customerTypeString = "Premium";
+        } else {
+            System.out.println("Opción inválida");
+            return;
+        }
+
+        adminController.addCustomerToDatabase(username, password, name, lastName, age, customerTypeString);
 
         System.out.println("Cliente creado.");
-
     }
 
     /**

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * The PlayListService class in the com.javeriana.services package is a service class that provides methods for managing playlists in a music application.
@@ -19,7 +20,7 @@ import java.util.UUID;
  */
 public class PlayListService {
 
-    private final List<PlayList> playLists;
+    private static List<PlayList> playLists = List.of();
 
 
     /**
@@ -116,7 +117,7 @@ public class PlayListService {
     public Map<String, PlayList> getPlayListsById() {
         return playLists.stream()
                 .collect(
-                        java.util.stream.Collectors.toMap(
+                        Collectors.toMap(
                                 playList -> playList.getId().toString(),
                                 playList -> playList
                         )
@@ -215,7 +216,7 @@ public class PlayListService {
      *
      * @return A list of all songs in all playlists.
      */
-    public List<Song> getAllSongsInPlayLists() {
+    public static List<Song> getAllSongsInPlayLists() {
         List<Song> allSongs = new ArrayList<>();
         for (PlayList playList : playLists){
             allSongs.addAll(playList.getSongs());

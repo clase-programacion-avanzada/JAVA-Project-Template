@@ -77,7 +77,7 @@ public class ReportService {
      * @param songsByArtist A list of songs by an artist.
      * @return A map of song IDs to the number of times they appear in the list.
      */
-    public Map<UUID, Integer> getCountOfSongsByArtist(List<Song> songsByArtist) {
+    public static Map<UUID, Integer> getCountOfSongsByArtist(List<Song> songsByArtist) {
 
         Map<UUID, Integer> songCountMap = new HashMap<>();
 
