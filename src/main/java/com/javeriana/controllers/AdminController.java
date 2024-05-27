@@ -98,7 +98,7 @@ public class AdminController {
      * @return a list of all songs.
      */
     public List<String> getAllSongs() {
-        return new ArrayList<>();
+        return songService.getSongsToString();
     }
 
     /**
@@ -107,7 +107,7 @@ public class AdminController {
      * @return a list of all customer names.
      */
     public List<String> getAllCustomers() {
-        return new ArrayList<>();
+        return customerService.getCustomersToString();
     }
 
     /**
