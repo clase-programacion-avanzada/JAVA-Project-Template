@@ -1,6 +1,8 @@
 package com.javeriana.views;
 
 import com.javeriana.controllers.FileManagementController;
+import com.javeriana.exceptions.UnsupportedTypeException;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -240,7 +242,7 @@ public class FileManagementView {
                 customersFileName
             );
 
-        } catch (IOException e) {
+        } catch (IOException | UnsupportedTypeException e) {
             System.out.println("Error al importar los archivos");
             System.out.println(e.getMessage());
         }

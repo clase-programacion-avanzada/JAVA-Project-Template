@@ -2,6 +2,7 @@ package com.javeriana.controllers;
 
 import com.javeriana.exceptions.AlreadyExistsException;
 import com.javeriana.exceptions.NotFoundException;
+import com.javeriana.exceptions.UnsupportedTypeException;
 import com.javeriana.models.*;
 import com.javeriana.services.ArtistService;
 import com.javeriana.services.CustomerService;
@@ -130,23 +131,12 @@ public class AdminController {
      * @param customerTypeString
      * @throws AlreadyExistsException if a customer with the same username already exists in the database.
      */
-    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age, String customerTypeString) throws AlreadyExistsException {
-        Customer customerUsername = customerService.searchCustomerByUsername(username);
-        if (customerUsername != null) {
-            throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
-        }
-
-        // Crear un objeto Customer según el tipo de cliente que se desea crear
-        Customer customer;
-        if (customerTypeString.equals("Premium")) {
-            customer = new PremiumCustomer(username, password, name, lastName, age);
-        } else if (customerTypeString.equals("Regular")) {
-            customer = new RegularCustomer(username, password, name, lastName, age);
-        } else {
-            throw new IllegalArgumentException("Tipo de cliente no válido");
-        }
-
-        customerService.addCustomer(customer);
+    public void addCustomerToDatabase(String username, String password, String name, String lastName, int age, String customerTypeString) throws AlreadyExistsException, UnsupportedTypeException {
+       Customer customerUsername = customerService.searchCustomerByUsername(username);
+       if(customerUsername != null){
+           throw new AlreadyExistsException("El nombre de usuario " + username + " ya existe");
+       }
+       customerService.addCustomer(username, password, name, lastName, age);
     }
 
     /**

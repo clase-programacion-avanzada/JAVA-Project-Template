@@ -1,5 +1,6 @@
 package com.javeriana.services;
 
+import com.javeriana.exceptions.UnsupportedTypeException;
 import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
 import com.javeriana.models.PlayList;
@@ -224,7 +225,7 @@ public class FileManagementService {
                                                  String separator,
                                                  String customersCSVFileName,
                                                  Map<String, Artist> artistsById,
-                                                 Map<String, PlayList> playListById) throws IOException {
+                                                 Map<String, PlayList> playListById) throws IOException, UnsupportedTypeException {
 
         //File has the following format:
         //id; username; password; name; lastName; age; {ArtistId1,ArtistId2,ArtistId3,...};{PlayListId1,PlayListId2,PlayListId3,...}
@@ -240,14 +241,15 @@ public class FileManagementService {
 
         for(String line : lines) {
             String[] data = line.split(separator);
-            UUID id = UUID.fromString(data[0]);
-            String username = data[1];
-            String password = data[2];
-            String name = data[3];
-            String lastname = data[4];
-            int age = Integer.parseInt(data[5]);
+            String type = data[0];
+            String id = data[1];
+            String username = data[2];
+            String password = data[3];
+            String name = data[4];
+            String lastname = data[5];
+            int age = Integer.parseInt(data[6]);
 
-            List<String> artistIds = extractIds(data[6]);
+            List<String> artistIds = extractIds(data[7]);
             Set<Artist> artists = new HashSet<>();
             for(String artistId : artistIds) {
                 Artist artist = artistsById.getOrDefault(artistId, Artist.GetUnknownArtist(artistId));
@@ -260,27 +262,16 @@ public class FileManagementService {
                 PlayList playList = playListById.getOrDefault(playListId, PlayList.getUnknownPlayList(playListId));
                 playLists.add(playList);
             }
-            customers.add(new Customer(id, username, password, name, lastname, age, artists, playLists) {
-                @Override
-                public void addPlayList(PlayList playList) {
-
-                }
-
-                @Override
-                public List<PlayList> getPlayLists() {
-                    return List.of();
-                }
-
-                @Override
-                protected List<String> getPlayListIds() {
-                    return List.of();
-                }
-
-                @Override
-                public List<UUID> getPlayListsIds() {
-                    return List.of();
-                }
-            });
+            Customer newCustomer=Customer.createCustomer(type,
+                    UUID.fromString(id),
+                    username,
+                    password,
+                    name,
+                    lastname,
+                    age,
+                    artists,
+                    playLists);
+            customers.add(newCustomer);
         }
 
         // Return the list of customers

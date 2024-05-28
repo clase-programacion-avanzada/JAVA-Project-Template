@@ -67,7 +67,7 @@ public class Main {
         // This is another example of IoC, where the views do not create their own dependencies (the controllers), but are provided with them when they are created.
         Scanner scanner = new Scanner(System.in);
         AdminView adminView = new AdminView(adminController, scanner);
-        FileManagementView fileManagementView = new FileManagementView(fileService, scanner, "src/main/resources/", "artists", "customers", "playlists", "songs");
+        FileManagementView fileManagementView = new FileManagementView(fileService, scanner, "src/main/resources/", "artists", "customers_2", "playlists", "songs");
         CustomerView customerView = new CustomerView(customerController, scanner);
         ReportView reportView = new ReportView(reportController, scanner);
 

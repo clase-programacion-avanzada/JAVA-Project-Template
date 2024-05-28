@@ -63,7 +63,7 @@ public class PlayListService {
         PlayList newPlayList = new PlayList(name);
         playLists.add(newPlayList);
 
-        return PlayList.getUnknownPlayList(UUID.randomUUID().toString());
+        return newPlayList;
     }
 
     /**

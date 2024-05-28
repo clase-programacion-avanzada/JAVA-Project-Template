@@ -140,6 +140,11 @@ public abstract class Customer implements Serializable {
         this.playLists = new ArrayList<>();
     }
 
+    public Customer(String type, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, List<PlayList> playLists) {
+        this.followedArtists = followedArtists;
+        this.playLists = playLists;
+    }
+
 
     // endregion
 
@@ -283,11 +288,11 @@ public abstract class Customer implements Serializable {
 
     }
 
-    public static Customer createCustomer(String type, UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) throws UnsupportedTypeException {
+    public static Customer createCustomer(String type, UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, List<PlayList> playListList) throws UnsupportedTypeException {
         if (type.equalsIgnoreCase("Regular")) {
-            return new RegularCustomer(id, username, password, name, lastName, age, followedArtists);
+            return new RegularCustomer(id, username, password, name, lastName, age, followedArtists, playListList);
         } else if (type.equalsIgnoreCase("Premium")) {
-            return new PremiumCustomer(id, username, password, name, lastName, age, followedArtists);
+            return new PremiumCustomer(id, username, password, name, lastName, age, followedArtists, playListList);
         } else {
             throw new UnsupportedTypeException("Tipo de cliente no soportado: " + type);
         }

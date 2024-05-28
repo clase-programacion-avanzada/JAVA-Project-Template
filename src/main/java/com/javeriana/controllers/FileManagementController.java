@@ -1,5 +1,6 @@
 package com.javeriana.controllers;
 
+import com.javeriana.exceptions.UnsupportedTypeException;
 import com.javeriana.models.Artist;
 import com.javeriana.models.Customer;
 import com.javeriana.models.PlayList;
@@ -89,9 +90,8 @@ public class FileManagementController {
                                String songsFileName,
                                String playListsFileName,
                                String customersFileName)
-            throws IOException {
+            throws IOException, UnsupportedTypeException {
 
-        try {
             String artistsCSVFileName = artistsFileName + extension;
             List<Artist> artists = fileManagementService.importArtistsFromCSV(path, separator, artistsCSVFileName);
             artistService.loadArtists(artists);
@@ -110,9 +110,7 @@ public class FileManagementController {
             String customersCSVFileName = customersFileName + extension;
             List<Customer> customers = fileManagementService.importCustomersFromCSV(path, separator, customersCSVFileName, artistsById, playListById);
             customerService.loadCustomers(customers);
-        } catch (IOException e) {
-            throw new IOException("Error al importar archivos CSV",e);
-}
+
     }
 
     /**

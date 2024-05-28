@@ -19,14 +19,20 @@ public class RegularCustomer extends Customer {
         }
     }
 
+    public RegularCustomer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists, List<PlayList> playLists) {
+        super(id, username, password, name, lastName, age, followedArtists);
+        if (playLists.size() != 1) {
+            throw new IllegalArgumentException();
+        }
+
+        this.playList = playLists.get(0);
+    }
+
     public RegularCustomer(String username, String password, String name, String lastName, int age) {
         super(username, password, name, lastName, age);
         this.playList = new PlayList(DEFAULT_PLAYLIST_NAME + (int) (Math.random() * 1000));
     }
 
-    public RegularCustomer(UUID id, String username, String password, String name, String lastName, int age, Set<Artist> followedArtists) {
-        super();
-    }
 
     @Override
     public void addPlayList(PlayList playList) {
