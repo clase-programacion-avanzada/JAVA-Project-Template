@@ -92,6 +92,7 @@ public class FileManagementController {
                                String customersFileName)
             throws IOException, UnsupportedTypeException {
 
+
             String artistsCSVFileName = artistsFileName + extension;
             List<Artist> artists = fileManagementService.importArtistsFromCSV(path, separator, artistsCSVFileName);
             artistService.loadArtists(artists);
