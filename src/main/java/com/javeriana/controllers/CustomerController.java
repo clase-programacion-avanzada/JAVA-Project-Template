@@ -226,7 +226,7 @@ public class CustomerController {
      * @throws AlreadyExistsException if the artist is already followed.
      */
     public void followArtist(String artistId) throws NotFoundException, WrongLogInException, AlreadyExistsException {
-    Artist artist = (Artist) artistService.getArtistsByIds(Collections.singleton(artistId));
+        Artist artist = artistService.searchArtistById(artistId);
     if(artist == null){
         throw new NotFoundException("Artista no encontrado.");
     }
@@ -234,7 +234,7 @@ public class CustomerController {
     if(Objects.equals(followed, Collections.singletonList(artistId)))
         throw new AlreadyExistsException("El artista ya esta en seguidos.");
     else{
-        followArtist(artistId);
+        customerService.followArtist(artist);
     }
     }
 
