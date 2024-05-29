@@ -274,15 +274,15 @@ public class AdminController {
      */
     public void deleteArtistFromDatabase(String artistId) throws NotFoundException {
         Artist checkArtist = artistService.searchArtistById(artistId);
-        if(checkArtist == null){
+        if (checkArtist == null) {
             throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
         }
 
         List<Song> allSongsByArtist = songService.searchSongsByArtistId(artistId);
 
-        for(int i = 0; i < allSongsByArtist.size(); i++){
-            String songs = allSongsByArtist.toString();
-            deleteSongFromDatabase(songs);
+        for (Song song : allSongsByArtist) {
+            String songId = song.getId().toString();
+            deleteSongFromDatabase(songId);
         }
         artistService.deleteArtist(artistId);
     }
