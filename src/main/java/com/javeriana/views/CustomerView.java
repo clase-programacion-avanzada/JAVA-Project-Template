@@ -229,6 +229,8 @@ public class CustomerView {
             4. Eliminar canción de una playlist.
             5. Ver todas las canciones de una playlist.
             6. Seguir artista.
+            7. Ver artistas seguidos.
+            8. Reproducir una playList.
             
             0. Volver al menú principal.
             """;

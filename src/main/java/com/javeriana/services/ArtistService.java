@@ -120,7 +120,7 @@ public class ArtistService {
      * @param artistId The ID of the artist to search for.
      * @return The Artist object if found, null otherwise.
      */
-    public Artist searchArtistById(String artistId) {
+    public Artist  searchArtistById(String artistId) {
         UUID uuid = UUID.fromString(artistId);
         for (Artist artist : artists){
             if (artist.getId().equals(uuid)){

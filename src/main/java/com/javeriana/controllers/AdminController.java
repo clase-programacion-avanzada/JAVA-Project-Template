@@ -246,8 +246,8 @@ public class AdminController {
      * @throws NotFoundException if the song is not found in the database.
      */
     public void deleteSongFromDatabase(String songId) throws NotFoundException {
-        Song songID = songService.getSongsById().get(songId);
-        if(songID == null){
+        Song songIDs = songService.searchSongById(songId);
+        if(songIDs == null){
             throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
         }
 
@@ -273,7 +273,7 @@ public class AdminController {
      * @throws NotFoundException if the artist is not found in the database.
      */
     public void deleteArtistFromDatabase(String artistId) throws NotFoundException {
-        Artist checkArtist = artistService.getMapOfArtistsById().get(artistId);
+        Artist checkArtist = artistService.searchArtistById(artistId);
         if(checkArtist == null){
             throw new IllegalArgumentException("El ID proporcionado es nulo o erróneo.");
         }
